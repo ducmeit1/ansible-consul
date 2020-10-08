@@ -1,0 +1,33 @@
+# Consul Installation Configs
+consul_version: 1.8.4
+consul_enterprise: false
+consul_architecture_map:
+  amd64: amd64
+  x86_64: amd64
+  armv6l: armhfv6
+  armv7l: armhfv6
+  aarch64: arm64
+  32-bit: "386"
+  64-bit: amd64
+consul_architecture: "{{ consul_architecture_map[ansible_architecture] }}"
+consul_os: {{ ansible_system | lower }}
+consul_pkg: "consul{% if consul_enterprise %}-enterprise{% else %}{%endif%}_{{ consul_version }}_{{ consul_os }}_{{ consul_architecture }}.zip"
+consul_zip_url: "https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version }}_{{ consul_os }}_{{ consul_architecture }}.zip"
+consul_checksum_file_url: "https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version}}_SHA256SUMS"
+consul_os_packages:
+  - unzip
+
+# Consul Directory Configs
+consul_bin_path: "/usr/local/bin"
+consul_dir_path: "/opt/consul"
+consul_config_path: "{{ consul_dir_path }}/config"
+consul_bootstrap_state_path: "{{ consul_dir_path }}/.consul_bootstrapped"
+consul_data_path: "{{ consul_dir_path }}/data"
+consul_log_path: "var/log/consul"
+consul_log_file: "consul.log"
+consul_run_path: "/run/consul"
+consul_binary: "{{ consul_bin_path }}/consul"
+
+# Consul System User and Group
+consul_user: "consul"
+consul_group: "consul"
