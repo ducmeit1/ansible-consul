@@ -1,0 +1,7 @@
+- name: "Installing Consul"
+  hosts: consul_dc1
+  become: yes
+  become_user: root
+  roles:
+    - ansible-consul
+  gather_facts: true
