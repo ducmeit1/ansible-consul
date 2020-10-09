@@ -12,6 +12,20 @@
     validate_certs: false
   tags: installation
 
+- name: Read Consul package checksum
+  shell: "grep {{ consul_pkg }} /tmp/consul/consul_{{ consul_version }}_SHA256SUMS"
+  register: consul_sha256
+  changed_when: false
+  tags:
+    - installation
+    - skip_ansible_lint
+
+- name: Check Consul package file
+  stat:
+    path: "/tmp/consul/{{ consul_pkg }}"
+  register: consul_package
+  tags: installation
+
 - name: Download Consul
   get_url:
     url: "{{ consul_zip_url }}"
@@ -31,6 +45,14 @@
     mode: 0755
   register: consul_install
   tags: installation
+
+- name: Daemon reload systemd in case the binaries upgraded
+  systemd: daemon_reload=yes
+  become: true
+  when:
+    - ansible_service_mgr == "systemd"
+    - consul_install_upgrade | bool
+    - consul_install is changed
 
 - name: Cleanup
   file:
