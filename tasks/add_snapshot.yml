@@ -44,4 +44,4 @@
 - name: Reload systemd
   systemd:
     daemon_reload: true
-  when: systemd_unit | changed
+  when: systemd_unit is changed
