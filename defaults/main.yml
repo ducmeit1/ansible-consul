@@ -2,6 +2,7 @@
 consul_debug: false
 is_virtualenv: ""
 consul_install_dependencies: true
+consul_install_upgrade: false
 
 # Consul Installation Settings
 consul_version: 1.8.4
