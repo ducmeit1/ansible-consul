@@ -2,3 +2,5 @@ consul_os_packages:
   - unzip
   - curl
   - jq
+  - virtualenv
+  - python3

@@ -160,7 +160,7 @@ consul_tls_prefer_server_cipher_suites: false
 
 # DNS Settings
 consul_delegate_datacenter_dns: false
-consul_dnsmasq_enable: false
+consul_dnsmasq_enable: true
 consul_dnsmasq_bind_interfaces: false
 consul_dnsmasq_consul_address: "
   {# Use localhost if DNS is listening on all interfaces #}\
