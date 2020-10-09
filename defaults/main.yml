@@ -27,6 +27,8 @@ consul_binary: "{{ consul_bin_path }}/consul"
 # Consul System User and Group Settings
 consul_user: "consul"
 consul_group: "consul"
+consul_systemd_restart_sec: 42
+consul_systemd_limit_nofile: 65536
 
 # Log Settings
 syslog_group: "adm"
