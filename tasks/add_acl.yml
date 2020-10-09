@@ -37,6 +37,8 @@
         - name: Save acl_replication_token from existing configuration
           set_fact: 
             consul_acl_replication_token: "{{ consul_acl_replication_token_read.stdout | from_json | json_query(query) }}"
+          vars:
+            query: "acl.tokens.replication"
 
       run_once: true
       when:
