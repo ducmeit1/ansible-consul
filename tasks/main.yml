@@ -30,5 +30,8 @@
     - consul_encrypt_enable | bool
 
 - name: Create ACL configuration
-  include_tasks: add_acl.yml
+  import_tasks: add_acl.yml
   when: consul_acl_enable | bool
+
+- name: Add Consul configuration
+  import_tasks: add_consul_configuration.yml

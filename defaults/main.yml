@@ -90,7 +90,6 @@ consul_addresses:
   dns: "{{ consul_client_address }}"
   http: "{{ consul_client_address }}"
   https: "{{ consul_client_address }}"
-  rpc: "{{ consul_client_address }}"
   grpc: "{{ consul_client_address }}"
 
 # Port Settings
@@ -98,7 +97,6 @@ consul_ports:
   dns: "8600"
   http: "8500"
   https: "8501"
-  rpc: "8400"
   serf_lan: "8301"
   serf_wan: "8302"
   server: "8300"
@@ -198,4 +196,4 @@ consul_snapshot_stale: false
 consul_services: []
 
 # Consul Connect Settings
-consul_connect_enabled: false
+consul_connect_enabled: true
