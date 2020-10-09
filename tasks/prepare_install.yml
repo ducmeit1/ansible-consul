@@ -1,5 +1,46 @@
 # Preapre install consul
 
+- name: Install OS packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ consul_os_packages }}"
+  tags: installation
+
+- name: Install python dependencies
+  when:
+    - consul_install_dependencies | bool
+  block:
+    - name: Install netaddr dependency on controlling host (with --user)
+      pip:
+        name: netaddr
+        extra_args: --user
+      delegate_to: 127.0.0.1
+      become: false
+      vars:
+        ansible_become: false
+      run_once: true
+      when: not is_virtualenv or is_virtualenv == None
+
+    - name: Install netaddr dependency on controlling host (virtualenv)
+      pip:
+        name: netaddr
+      delegate_to: 127.0.0.1
+      become: false
+      vars:
+        ansible_become: false
+      run_once: true
+      when: is_virtualenv is defined
+
+- name: Check for existing Consul binary
+  stat:
+    path: "{{ consul_binary }}"
+  register: consul_binary_installed
+
+- name: Calculate whether to install consul binary
+  set_fact:
+    consul_install_binary: "{{ consul_install_upgrade | bool or not consul_binary_installed.stat.exists }}"
+
 - name: Gather facts from other servers
   setup:
   delegate_to: "{{ item }}"
@@ -19,7 +60,7 @@
 
 - name: Read bootstrapped state
   stat:
-    path: "{{ consul_bootstrap_state }}"
+    path: "{{ consul_bootstrap_state_path }}"
   register: bootstrap_state
   ignore_errors: true
   tags: always
