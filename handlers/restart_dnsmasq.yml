@@ -1,6 +1,0 @@
-# Restart DNSMASQ
-
-- name: restart dnsmasq
-  service:
-    name: dnsmasq
-    state: restarted

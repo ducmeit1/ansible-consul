@@ -1,5 +1,15 @@
-- name: restart dnsmasq
-  import_tasks: restart_dnsmasq.yml
-
 - name: restart consul
-  import_tasks: restart_consul.yml
+  service:
+    name: consul
+    state: restarted
+  listen: 'restart consul'
+
+- name: restart dnsmasq
+  service:
+    name: dnsmasq
+    state: restarted
+  listen: 'restart dnsmasq'
+
+- name: reload consul configuration
+  command: "pkill --pidfile '{{ consul_run_path }}/consul.pid' --signal SIGHUP"
+  listen: 'reload consul configuration'
