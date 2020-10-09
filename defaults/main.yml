@@ -1,23 +1,18 @@
-# Consul Installation Configs
+# Common Settings
+consul_debug: false
+is_virtualenv: ""
+consul_install_dependencies: true
+
+# Consul Installation Settings
 consul_version: 1.8.4
 consul_enterprise: false
-consul_architecture_map:
-  amd64: amd64
-  x86_64: amd64
-  armv6l: armhfv6
-  armv7l: armhfv6
-  aarch64: arm64
-  32-bit: "386"
-  64-bit: amd64
-consul_architecture: "{{ consul_architecture_map[ansible_architecture] }}"
-consul_os: {{ ansible_system | lower }}
+consul_architecture: "amd64"
+consul_os: "linux"
 consul_pkg: "consul{% if consul_enterprise %}-enterprise{% else %}{%endif%}_{{ consul_version }}_{{ consul_os }}_{{ consul_architecture }}.zip"
 consul_zip_url: "https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version }}_{{ consul_os }}_{{ consul_architecture }}.zip"
 consul_checksum_file_url: "https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version}}_SHA256SUMS"
-consul_os_packages:
-  - unzip
 
-# Consul Directory Configs
+# Consul Directory Settings
 consul_bin_path: "/usr/local/bin"
 consul_dir_path: "/opt/consul"
 consul_config_path: "{{ consul_dir_path }}/config"
@@ -28,6 +23,178 @@ consul_log_file: "consul.log"
 consul_run_path: "/run/consul"
 consul_binary: "{{ consul_bin_path }}/consul"
 
-# Consul System User and Group
+# Consul System User and Group Settings
 consul_user: "consul"
 consul_group: "consul"
+
+# Log Settings
+syslog_group: "adm"
+consul_log_level: "INFO"
+consul_log_rotate_bytes: 0
+consul_log_rotate_duration: "24h'"
+consul_log_rotate_max_files: 0
+consul_syslog_enable: false
+consul_syslog_facility: "local0"
+consul_configure_syslogd: false
+
+# Consul Settings
+consul_datacenter: "dc1"
+consul_domain: "consul"
+consul_alt_domain: ""
+consul_node_meta: {}
+consul_iface: "{{ ansible_default_ipv4.interface }}"
+consul_node_role: "{{ lookup('env','CONSUL_NODE_ROLE') | default('client', true) }}"
+consul_recursors: []
+consul_bootstrap_expect: "{{ lookup('env','CONSUL_BOOTSTRAP_EXPECT') | default(false, true) }}"
+consul_bootstrap_expect_value: "{{ _consul_lan_servercount | int }}"
+consul_ui: true
+consul_ui_legacy: false
+consul_disable_update_check: false
+consul_enable_script_checks: false
+consul_enable_local_script_checks: false
+consul_raft_protocol: 3
+consul_retry_join_skip_hosts: false
+consul_retry_interval: "30s"
+consul_retry_interval_wan: "30s"
+consul_retry_max: 0
+consul_retry_max_wan: 0
+consul_env_vars:
+  - "CONSUL_UI_BETA=false"
+
+# Autopilot Settings
+consul_autopilot_enable: true
+consul_autopilot_cleanup_dead_Servers: true
+consul_autopilot_last_contact_threshold: "200ms"
+consul_autopilot_max_trailing_logs: 250
+consul_autopilot_server_stabilization_time: "10s"
+consul_autopilot_redundancy_zone_tag: "az"
+consul_autopilot_disable_upgrade_migration: "false"
+consul_autopilot_upgrade_version_tag: ""
+
+# Cloud Auto Discovery Settings (Only Support GCP)
+consul_cloud_autodiscovery: false
+consul_cloud_autodiscovery_provider: ""
+consul_cloud_autodiscovery_gce_projectid: ""
+consul_cloud_autodiscovery_gce_tag_value: ""
+consul_cloud_autodiscovery_params: "project_name={{ consul_cloud_autodiscovery_gce_projectid }} tag_value={{ consul_cloud_autodiscovery_gce_tag_value }}"
+consul_cloud_autodiscovery_string: "provider={{ consul_cloud_autodiscovery_provider }} {{ consul_cloud_autodiscovery_params }}"
+
+# Address Settings
+consul_bind_address: "{{ hostvars[inventory_hostname]['ansible_'+ consul_iface | replace('-', '_')]['ipv4']['address'] }}"
+consul_advertise_address: "{{ consul_bind_address }}"
+consul_advertise_address_wan: "{{ consul_bind_address }}"
+consul_translate_wan_address: false
+consul_client_address: '127.0.0.1'
+consul_addresses:
+  dns: "{{ consul_client_address }}"
+  http: "{{ consul_client_address }}"
+  https: "{{ consul_client_address }}"
+  rpc: "{{ consul_client_address }}"
+  grpc: "{{ consul_client_address }}"
+
+# Port Settings
+consul_ports:
+  dns: "8600"
+  http: "8500"
+  https: "8501"
+  rpc: "8400"
+  serf_lan: "8301"
+  serf_wan: "8302"
+  server: "8300"
+  grpc: "8502"
+
+# Group Settings
+consul_group_name: "consul_dc1"
+consul_join: []
+consul_join_wan: []
+consul_servers: "\
+  {% set _consul_servers = [] %}\
+  {% for host in groups[consul_group_name] %}\
+    {% set _consul_node_role = hostvars[host]['consul_node_role'] | default('client', true) %}\
+    {% if ( _consul_node_role == 'server' or _consul_node_role == 'bootstrap') %}\
+      {% if _consul_servers.append(host) %}{% endif %}\
+    {% endif %}\
+  {% endfor %}\
+  {{ _consul_servers }}"
+consul_gather_server_facts: false
+
+# ACL Settings
+consul_acl_policy: false
+consul_acl_enable: false
+consul_acl_ttl: "30s"
+consul_acl_token_persistence: true
+consul_acl_datacenter: "{{ consul_datacenter }}"
+consul_acl_down_policy: "extend-cache"
+consul_acl_token: ""
+consul_acl_agent_token: ""
+consul_acl_agent_master_token: ""
+consul_acl_default_policy: "allow"
+consul_acl_master_token: ""
+consul_acl_master_token_display: false
+consul_acl_replication_enable: ""
+consul_acl_replication_token: ""
+
+# Gossip Encryption Settings
+consul_encrypt_enable: true
+consul_encrypt_verify_incoming: true
+consul_encrypt_verify_outgoing: true
+consul_disable_keyring_file: false
+
+# TLS Settings
+consul_tls_enable: false
+consul_tls_src_files: "{{ role_path+'/files' }}"
+consul_tls_dir: "{{ consul_dir_path'/ssl' }}"
+consul_tls_ca_crt: "ca.crt"
+consul_tls_server_crt: "server.crt"
+consul_tls_server_key: "server.key"
+consul_tls_copy_keys: true
+consul_tls_verify_incoming: false
+consul_tls_verify_outgoing: true
+consul_tls_verify_incoming_rpc: false
+consul_tls_verify_incoming_https: false
+consul_tls_verify_server_hostname: false
+consul_tls_files_remote_src: false
+consul_tls_min_version: "tls12"
+consul_tls_cipher_suites: ""
+consul_tls_prefer_server_cipher_suites: false
+
+# DNS Settings
+consul_delegate_datacenter_dns: false
+consul_dnsmasq_enable: false
+consul_dnsmasq_bind_interfaces: false
+consul_dnsmasq_consul_address: "
+  {# Use localhost if DNS is listening on all interfaces #}\
+  {% if consul_addresses.dns == '0.0.0.0' %}\
+    127.0.0.1\
+  {% else %}\
+    {{ consul_addresses.dns }}\
+  {% endif %}"
+consul_dnsmasq_cache: -1
+consul_dnsmasq_servers:
+  - 8.8.8.8
+  - 8.8.4.4
+consul_dnsmasq_revservers: []
+consul_dnsmasq_no_poll: false
+consul_dnsmasq_no_resolv: false
+consul_dnsmasq_local_service: false
+consul_dnsmasq_listen_addresses: []
+consul_iptables_enable: false
+
+# Performance Settings
+consul_performance:
+  raft_multiplier: 1
+  leave_drain_time: 5s
+  rpc_hold_timeout: 7s
+
+# Snapshot Settings
+consul_snapshot: false
+consul_snapshot_storage: "{{ consul_dir_path }}/snaps"
+consul_snapshot_interval: 1h
+consul_snapshot_retain: 30
+consul_snapshot_stale: false
+
+# Services Settings
+consul_services: []
+
+# Consul Connect Settings
+consul_connect_enabled: false

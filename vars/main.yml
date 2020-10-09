@@ -1,0 +1,4 @@
+consul_os_packages:
+  - unzip
+  - curl
+  - jq

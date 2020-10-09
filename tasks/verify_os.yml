@@ -1,0 +1,40 @@
+# Verify OS
+
+- name: Check Debian os
+  fail:
+    msg: "{{ ansible_distribution }} is not a supported. Only support Debian 9."
+  when:
+    - ansible_distribution != "Debian"
+
+- name: Check Debian version
+  fail:
+    msg: "{{ ansible_distribution_version }} is not a supported version."
+  when:
+    - ansible_distribution == "Debian"
+    - (ansible_distribution_version != 'buster/sid') and (ansible_distribution_version is version_compare(9, '<'))
+
+- name: Check specified ethernet interface
+  fail:
+    msg: "The ethernet interface specified by consul_iface was not found."
+  when:
+    - consul_iface not in ansible_interfaces
+
+- name: Check for both Dnsmasq and iptables enabled
+  fail:
+    msg: "EONEORTHEOTHER: DNSmasq and iptables together is not supported."
+  when:
+    - consul_dnsmasq_enable | bool
+    - consul_iptables_enable | bool
+
+- name: Check for iptables enabled but no recursors
+  fail:
+    msg: "Recursors are required if iptables is enabled."
+  when:
+    - consul_iptables_enable | bool
+    - consul_recursors | length == 0
+
+- name: Check consul_group_name is included in groups
+  fail:
+    msg: "consul_group_name must be included in groups."
+  when: consul_group_name not in groups
+

@@ -1,3 +1,5 @@
+# Add group and user for Consul
+
 # Add group
 - name: Add Consul group
   group:

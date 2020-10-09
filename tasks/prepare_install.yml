@@ -1,0 +1,25 @@
+# Preapre install consul
+
+- name: Gather facts from other servers
+  setup:
+  delegate_to: "{{ item }}"
+  delegate_facts: true
+  with_items: "{{ consul_servers | difference(play_hosts) }}"
+  ignore_errors: true
+  run_once: true
+  when: consul_gather_server_facts | bool
+
+- name: Expose advertise_address(_wan) datacenter and node_role as facts
+  set_fact:
+    consul_advertise_address_wan: "{{ consul_advertise_address_wan }}"
+    consul_advertise_address: "{{ consul_advertise_address }}"
+    consul_bind_address: "{{ consul_bind_address }}"
+    consul_datacenter: "{{ consul_datacenter }}"
+    consul_node_role: "{{ consul_node_role }}"
+
+- name: Read bootstrapped state
+  stat:
+    path: "{{ consul_bootstrap_state }}"
+  register: bootstrap_state
+  ignore_errors: true
+  tags: always

@@ -1,11 +1,13 @@
-# Install Consul Package From Remote
+# Install Consul package from remote
 
-- name: Install OS packages
-  package:
-    name: "{{ item }}"
-    state: present
-  with_items: "{{ consul_os_packages }}"
-  tags: installation
+- name: Check for existing Consul binary
+  stat:
+    path: "{{ consul_binary }}"
+  register: consul_binary_installed
+
+- name: Calculate whether to install consul binary
+  set_fact:
+    consul_install_binary: "{{ consul_install_upgrade | bool or not consul_binary_installed.stat.exists }}"
 
 - name: Validate remote Consul directory
   file:

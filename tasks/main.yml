@@ -1,0 +1,23 @@
+# Main tasks for Consul
+
+- name: Verify Debian and other requirements of OS
+  import_tasks: verify_os.yml
+
+- name: Include variables
+  include_vars: "main.yml"
+  tags: always
+
+- name: Install dependencies
+  import_tasks: install_dependencies.yml
+
+- name: Prepare install Consul
+  import_tasks: prepare_install.yml
+
+- name: Include user and group settings
+  import_tasks: user_group.yml
+
+- name: Include directory settings
+  import_tasks: dirs.yml
+
+- name: Install consul
+  import_tasks: install_consul.yml
