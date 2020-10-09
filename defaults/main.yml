@@ -34,11 +34,11 @@ consul_systemd_limit_nofile: 65536
 syslog_group: "adm"
 consul_log_level: "INFO"
 consul_log_rotate_bytes: 0
-consul_log_rotate_duration: "24h'"
+consul_log_rotate_duration: "24h"
 consul_log_rotate_max_files: 0
-consul_syslog_enable: false
+consul_syslog_enable: true
 consul_syslog_facility: "local0"
-consul_configure_syslogd: false
+consul_configure_syslogd: true
 
 # Consul Settings
 consul_datacenter: "dc1"
