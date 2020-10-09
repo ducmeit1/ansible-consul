@@ -62,7 +62,7 @@
     {% if leave_on_terminate is defined %}
     "leave_on_terminate": {{ leave_on_terminate | bool | to_json }},
     {% endif %}
-    "http_max_conns_per_client": {{ consul_http_max_conns_per_client }}
+    "http_max_conns_per_client": {{ consul_http_max_conns_per_client }},
 
     {## Encryption and TLS ##}
     {% if consul_encrypt_enable | bool %}
