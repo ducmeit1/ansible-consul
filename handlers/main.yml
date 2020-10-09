@@ -1,2 +1,2 @@
 - name: restart dnsmasq
-  import_taks: restart_dnsmasq.yml
+  import_tasks: restart_dnsmasq.yml
