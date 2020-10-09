@@ -1,6 +1,6 @@
 - name: "Configure consul services"
   template:
-    dest: "{{ consul_configd_path }}/service_{{ item.name }}.json"
+    dest: "{{ consul_config_path }}/service_{{ item.name }}.json"
     src: consul_service.json.j2
     owner: "{{ consul_user }}"
     group: "{{ consul_group }}"
@@ -11,7 +11,7 @@
 
 - name: Get the list of service config file
   find:
-    paths: "{{ consul_configd_path }}"
+    paths: "{{ consul_config_path }}"
     file_type: file
   register: services_enabled_unix
 
@@ -27,7 +27,7 @@
 - name: Set fact with list of service we manage
   set_fact:
     managed_files: "{{ managed_files |default([]) }} + \
-    [ '{{ consul_configd_path }}/service_{{ item.name }}.json' ]"
+    [ '{{ consul_config_path }}/service_{{ item.name }}.json' ]"
   with_items: "{{ consul_services }}"
 
 - name: Delete non declared services

@@ -192,8 +192,9 @@ consul_performance:
   rpc_hold_timeout: 7s
 
 # Snapshot Settings
-consul_snapshot: false
-consul_snapshot_storage: "{{ consul_dir_path }}/snaps"
+consul_snapshot: true
+consul_snapshot_storage_path: "{{ consul_dir_path }}/snaps"
+consul_snapshot_config_path: "{{ consul_snapshot_storage_path }}/config"
 consul_snapshot_interval: 1h
 consul_snapshot_retain: 30
 consul_snapshot_stale: false

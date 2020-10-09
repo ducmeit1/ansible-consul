@@ -13,10 +13,26 @@
     - ansible_service_mgr == "systemd"
     - consul_snapshot | bool
 
+- name: Create snaps storage folder
+  file:
+    state: directory
+    path: "{{ consul_snapshot_storage_path }}"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: 0744
+
+- name: Create snaps storage config folder
+  file:
+    state: directory
+    path: "{{ consul_snapshot_config_path }}"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: 0744
+
 - name: Create snapshot agent config
   template:
     src: consul_snapshot.json.j2
-    dest: "{{ consul_config_path }}/consul_snapshot.json"
+    dest: "{{ consul_snapshot_config_path }}/consul_snapshot.json"
     owner: "{{ consul_user }}"
     group: "{{ consul_group }}"
     mode: 0644
@@ -29,11 +45,3 @@
   systemd:
     daemon_reload: true
   when: systemd_unit | changed
-
-- name: Create snaps storage folder
-  file:
-    state: directory
-    path: "{{ consul_snapshot_storage }}"
-    owner: "{{ consul_user }}"
-    group: "{{ consul_group }}"
-    mode: 0744

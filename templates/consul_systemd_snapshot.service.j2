@@ -4,7 +4,7 @@ Documentation=https://www.consul.io/
 Requires=network-online.target
 Requisite=consul.service
 After=network-online.target
-ConditionFileNotEmpty={{ consul_config_path }}/consul_snapshot.json
+ConditionFileNotEmpty={{ consul_snapshot_config_path }}/consul_snapshot.json
 
 [Service]
 User={{ consul_user }}
@@ -12,7 +12,7 @@ Group={{ consul_group }}
 PIDFile={{ consul_run_path }}/consul_snapshot.pid
 PermissionsStartOnly=true
 ExecStart={{ consul_bin_path }}/consul snapshot agent \
--config-file={{ consul_config_path }}/consul_snapshot.json
+-config-file={{ consul_snapshot_config_path }}/consul_snapshot.json
 ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=SIGTERM
 Restart=on-failure
