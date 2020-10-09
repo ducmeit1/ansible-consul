@@ -1,36 +1,18 @@
 # Preapre install consul
 
+- name: Update OS packages
+  apt:
+    update_cache: yes
+    force_apt_get: yes
+    cache_valid_time: 3600
+  tags: installation
+
 - name: Install OS packages
   package:
     name: "{{ item }}"
     state: present
   with_items: "{{ consul_os_packages }}"
   tags: installation
-
-- name: Install python dependencies
-  when:
-    - consul_install_dependencies | bool
-  block:
-    - name: Install netaddr dependency on controlling host (with --user)
-      pip:
-        name: netaddr
-        extra_args: --user
-      delegate_to: 127.0.0.1
-      become: false
-      vars:
-        ansible_become: false
-      run_once: true
-      when: not is_virtualenv or is_virtualenv == None
-
-    - name: Install netaddr dependency on controlling host (virtualenv)
-      pip:
-        name: netaddr
-      delegate_to: 127.0.0.1
-      become: false
-      vars:
-        ansible_become: false
-      run_once: true
-      when: is_virtualenv is defined
 
 - name: Check for existing Consul binary
   stat:
