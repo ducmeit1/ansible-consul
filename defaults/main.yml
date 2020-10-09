@@ -72,11 +72,11 @@ consul_autopilot_disable_upgrade_migration: "false"
 consul_autopilot_upgrade_version_tag: ""
 
 # Cloud Auto Discovery Settings (Only Support GCP)
-consul_cloud_autodiscovery: false
-consul_cloud_autodiscovery_provider: ""
-consul_cloud_autodiscovery_gce_projectid: ""
-consul_cloud_autodiscovery_gce_tag_value: ""
-consul_cloud_autodiscovery_zone_pattern: ""
+consul_cloud_autodiscovery: true
+consul_cloud_autodiscovery_provider: "gce"
+consul_cloud_autodiscovery_gce_projectid: "driven-stage-269911"
+consul_cloud_autodiscovery_gce_tag_value: "consul"
+consul_cloud_autodiscovery_zone_pattern: "asia-southeast1-.*"
 consul_cloud_autodiscovery_params: "project_name={{ consul_cloud_autodiscovery_gce_projectid }} zone_pattern={{ consul_cloud_autodiscovery_zone_pattern }} tag_value={{ consul_cloud_autodiscovery_gce_tag_value }}"
 consul_cloud_autodiscovery_string: "provider={{ consul_cloud_autodiscovery_provider }} {{ consul_cloud_autodiscovery_params }}"
 
@@ -85,10 +85,10 @@ consul_bind_address: "{{ hostvars[inventory_hostname]['ansible_'+ consul_iface |
 consul_advertise_address: "{{ consul_bind_address }}"
 consul_advertise_address_wan: "{{ consul_bind_address }}"
 consul_translate_wan_address: false
-consul_client_address: "127.0.0.1"
+consul_client_address: "0.0.0.0"
 consul_addresses:
-  http: "{{ consul_client_address }}"
-  https: "{{ consul_client_address }}"
+  http: "127.0.0.1"
+  https: "127.0.0.1"
 
 # Port Settings
 consul_ports:
