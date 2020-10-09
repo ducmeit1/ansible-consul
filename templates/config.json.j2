@@ -62,6 +62,7 @@
     {% if leave_on_terminate is defined %}
     "leave_on_terminate": {{ leave_on_terminate | bool | to_json }},
     {% endif %}
+    "http_max_conns_per_client": {{ consul_http_max_conns_per_client }}
 
     {## Encryption and TLS ##}
     {% if consul_encrypt_enable | bool %}
@@ -83,7 +84,7 @@
     "tls_cipher_suites": "{{ consul_tls_cipher_suites}}",
     {% endif %}
     "tls_prefer_server_cipher_suites": {{ consul_tls_prefer_server_cipher_suites | bool | to_json }},
-    {% if consul_tls_auto_encrypt %}}
+    {% if consul_tls_auto_encrypt | bool %}}
     "auto_encrypt": {
         "allow_tls": true
     },
@@ -115,7 +116,7 @@
         "enable_mesh_gateway_wan_federation": {{ consul_mesh_gateway_wan_federation_enabled | bool | to_json }},
         "enabled": true
     },
-    "primary_gateways": {{ consul_mesh_gateway_primary_gateways | to_json }}
+    "primary_gateways": {{ consul_mesh_gateway_primary_gateways | to_json }},
     {% endif %}
 
     {# Client Settings #}
