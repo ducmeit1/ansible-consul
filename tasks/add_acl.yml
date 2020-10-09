@@ -2,7 +2,6 @@
     - block:
       - name: Check ACL master token from previously boostrapped server
         command: "cat {{ consul_config_path }}/config.json"
-        
         register: consul_acl_master_token_read
 
       - name: Save acl_master_token from existing configuration
@@ -10,8 +9,8 @@
           consul_acl_master_token: "{{ consul_acl_master_token_read.stdout | from_json | json_query(query) }}"
         vars:
           query: "acl.tokens.master"
-    
-      no_log: true
+        no_log: true
+
       run_once: true
       when:
         - bootstrap_state.stat.exists | bool
@@ -25,8 +24,8 @@
         - name: Save ACL master token
           set_fact:
             consul_acl_master_token: "{{ consul_acl_master_token_keygen.stdout }}"
-          
-      no_log: true
+          no_log: true
+
       run_once: true
       when:
         - (consul_acl_master_token is not defined or consul_acl_master_token | length == 0)
@@ -38,9 +37,10 @@
           register: consul_acl_replication_token_read
 
         - name: Save acl_replication_token from existing configuration
-          set_fact: consul_acl_replication_token="{{ consul_acl_replication_token_read.stdout | from_json | json_query(query) }}"
-      
-      no_log: true
+          set_fact: 
+            consul_acl_replication_token: "{{ consul_acl_replication_token_read.stdout | from_json | json_query(query) }}"
+          no_log: true
+
       run_once: true
       when:
         - bootstrap_state.stat.exists | bool
@@ -54,8 +54,8 @@
         - name: Save ACL replication token
           set_fact:
             consul_acl_replication_token: "{{ consul_acl_replication_token_keygen.stdout }}"    
-      
-      no_log: true
+          no_log: true
+          
       run_once: true
       when:
         - (consul_acl_replication_token is not defined or consul_acl_replication_token | length == 0)

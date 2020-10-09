@@ -11,8 +11,8 @@
             consul_gossip_encryption_key: "{{ consul_gossip_encryption_key_read.stdout | from_json | json_query(query) }}"
           vars:
             query: "encrypt"
+          no_log: true
 
-      no_log: true
       run_once: true
       when:
         - consul_gossip_encryption_key is not defined
@@ -28,8 +28,8 @@
         - name: Save gossip encryption key
           set_fact:
             consul_gossip_encryption_key: "{{ consul_gossip_encryption_keygen.stdout }}"
-
-      no_log: true
+          no_log: true
+          
       run_once: true
       when:
         - (consul_gossip_encryption_key is not defined or consul_gossip_encryption_key | length == 0)
@@ -40,7 +40,7 @@
         msg: "{{ consul_gossip_encryption_key }}"
       run_once: true
       when:
-        - consul_gossip_encryption_key_display | bool
+        - consul_encrpyt_key_display | bool
 
   when:
     - consul_encrypt_enable | bool
