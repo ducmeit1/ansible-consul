@@ -25,6 +25,6 @@
   import_tasks: install_dnsmasq.yml
 
 - name: Add gossip encrpytion
-  improt_tasks: add_gossip_encryption.yml
+  import_tasks: add_gossip_encryption.yml
   when:
     - consul_encrypt_enable | bool
