@@ -12,7 +12,7 @@
     "node_meta": {{ consul_node_meta | default({})| to_json }},
     {# Performance Settings #}
     "performance": {{ consul_performance | to_json }},
-
+    "pid_file": "{{ consul_run_path }}/consul.pid",
     {## Addresses ##}
     "bind_addr": "{{ consul_bind_address }}",
     "advertise_addr": "{{ consul_advertise_address }}",

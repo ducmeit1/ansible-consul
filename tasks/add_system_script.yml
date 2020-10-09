@@ -1,10 +1,4 @@
-- name: Create Debian init script
-  template:
-    src: consul_init.j2
-    dest: /etc/init.d/consul
-    owner: root
-    group: root
-    mode: 0755
+# Create systemd for Consul
 
 - name: Create systemd script
   template:

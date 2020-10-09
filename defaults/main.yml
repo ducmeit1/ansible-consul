@@ -81,7 +81,8 @@ consul_cloud_autodiscovery: false
 consul_cloud_autodiscovery_provider: ""
 consul_cloud_autodiscovery_gce_projectid: ""
 consul_cloud_autodiscovery_gce_tag_value: ""
-consul_cloud_autodiscovery_params: "project_name={{ consul_cloud_autodiscovery_gce_projectid }} tag_value={{ consul_cloud_autodiscovery_gce_tag_value }}"
+consul_cloud_autodiscovery_zone_pattern: ""
+consul_cloud_autodiscovery_params: "project_name={{ consul_cloud_autodiscovery_gce_projectid }} zone_pattern={{ consul_cloud_autodiscovery_zone_pattern }} tag_value={{ consul_cloud_autodiscovery_gce_tag_value }}"
 consul_cloud_autodiscovery_string: "provider={{ consul_cloud_autodiscovery_provider }} {{ consul_cloud_autodiscovery_params }}"
 
 # Address Settings

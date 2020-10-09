@@ -26,10 +26,10 @@
 
 - name: Create custom configuration
   copy:
-    dest: "{{ consul_configd_path }}/50custom.json"
+    dest: "{{ consul_config_path }}/custom_config.json"
     owner: "{{ consul_user }}"
     group: "{{ consul_group }}"
-    content: "{{ lookup('template', 'templates/50custom.json.j2') | to_nice_json }}"
+    content: "{{ lookup('template', 'templates/custom_config.json.j2') | to_nice_json }}"
   when:
     - consul_config_custom is defined
   notify:
