@@ -35,3 +35,6 @@
 
 - name: Add Consul configuration
   import_tasks: add_consul_config.yml
+
+- name: Add TLS
+  import_tasks: add_tls.yml

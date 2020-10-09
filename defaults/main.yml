@@ -147,11 +147,11 @@ consul_tls_ca_crt: "ca.crt"
 consul_tls_server_crt: "server.crt"
 consul_tls_server_key: "server.key"
 consul_tls_copy_keys: true
-consul_tls_verify_incoming: false
+consul_tls_verify_incoming: true
 consul_tls_verify_outgoing: true
-consul_tls_verify_incoming_rpc: false
-consul_tls_verify_incoming_https: false
-consul_tls_verify_server_hostname: false
+consul_tls_verify_incoming_rpc: true
+consul_tls_verify_incoming_https: true
+consul_tls_verify_server_hostname: true
 consul_tls_files_remote_src: false
 consul_tls_min_version: "tls12"
 consul_tls_cipher_suites: ""
