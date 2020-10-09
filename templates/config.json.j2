@@ -83,6 +83,11 @@
     "tls_cipher_suites": "{{ consul_tls_cipher_suites}}",
     {% endif %}
     "tls_prefer_server_cipher_suites": {{ consul_tls_prefer_server_cipher_suites | bool | to_json }},
+    {% if consul_tls_auto_encrypt %}}
+    "auto_encrypt": {
+        "allow_tls": true
+    },
+    {% endif %}}
     {% endif %}
 
     {## LAN Join ##}
@@ -107,8 +112,10 @@
     {## Enable Connect on Server ##}
     {% if consul_connect_enabled | bool %}
     "connect": {
+        "enable_mesh_gateway_wan_federation": {{ consul_mesh_gateway_wan_federation_enabled | bool | to_json }},
         "enabled": true
     },
+    "primary_gateways": {{ consul_mesh_gateway_primary_gateways | to_json }}
     {% endif %}
 
     {# Client Settings #}
