@@ -84,11 +84,11 @@
     "tls_cipher_suites": "{{ consul_tls_cipher_suites}}",
     {% endif %}
     "tls_prefer_server_cipher_suites": {{ consul_tls_prefer_server_cipher_suites | bool | to_json }},
-    {% if consul_tls_auto_encrypt | bool %}}
+    {% if consul_tls_auto_encrypt | bool %}
     "auto_encrypt": {
         "allow_tls": true
     },
-    {% endif %}}
+    {% endif %}
     {% endif %}
 
     {## LAN Join ##}
