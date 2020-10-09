@@ -1,57 +1,81 @@
-# Add gossip encryption for Consul
+# Add gossip encryption
 
 - block:
-    - name: Read gossip encryption key from previously boostrapped server
-      shell: 'cat {{ consul_dir_path }}/bootstrap/config.json | grep "encrypt" | sed -E ''s/"encrypt": "(.+)",?/\1/'' | sed ''s/^ *//;s/ *$//'''
-      register: consul_key_read
+    - block:
+        - name: Check for gossip encryption key on previously boostrapped server
+          slurp:
+            src: "{{ consul_config_path }}/config.json"
+          register: consul_config_b64
+          ignore_errors: true
+
+        - name: Deserialize existing configuration
+          set_fact:
+            consul_config: "{{ consul_config_b64.content | b64decode | from_json }}"
+          when: consul_config_b64.content is defined
+
+        - name: Save gossip encryption key from existing configuration
+          set_fact:
+            consul_raw_key: "{{ consul_config.encrypt }}"
+          when: consul_config is defined
+
+      no_log: true
+      when:
+        - consul_raw_key is not defined
+        - bootstrap_state.stat.exists | bool
+        - inventory_hostname in consul_servers
+
+    # Key provided by extra vars or the above block
+    - name: Write gossip encryption key locally for use with new servers
+      copy:
+        content: "{{ consul_raw_key }}"
+        dest: '/tmp/consul_raw.key'
+      become: false
+      vars:
+        ansible_become: false
+      no_log: true
+      register: consul_local_key
+      delegate_to: 127.0.0.1
+      changed_when: false
+      when: consul_raw_key is defined
+
+    # Generate new key if none was found
+    - block:
+        - name: Generate gossip encryption key
+          shell: "PATH={{ consul_bin_path }}:$PATH consul keygen"
+          register: consul_keygen
+
+        - name: Write key locally to share with other nodes
+          copy:
+            content: "{{ consul_keygen.stdout }}"
+            dest: '/tmp/consul_raw.key'
+          become: false
+          vars:
+            ansible_become: false
+          delegate_to: 127.0.0.1
+
+      no_log: true
       run_once: true
+      when:
+        - not consul_local_key.changed
+        - not bootstrap_state.stat.exists | bool
 
-    - name: Save gossip encryption key from existing configuration
-      set_fact: consul_raw_key={{ consul_key_read.stdout }}
-      ignore_errors: true
+    - name: Read gossip encryption key for servers that require it
+      set_fact:
+        consul_raw_key: "{{ lookup('file', '/tmp/consul_raw.key') }}"
+      no_log: true
+      when:
+        - consul_raw_key is not defined
 
-  when:
-    - consul_raw_key is not defined
-    - bootstrap_state.stat.exists | bool
-
-- name: Write gossip encryption key locally for use with new servers
-  copy:
-    content: "{{ consul_raw_key }}"
-    dest: /tmp/consul_raw.key
-  become: false
-  vars:
-    ansible_become: false
-  when:
-    - consul_raw_key is defined
-    - bootstrap_state.stat.exists | bool
-  delegate_to: 127.0.0.1
-
-- name: Read gossip encryption key for servers that require it
-  set_fact: consul_raw_key="{{ lookup('file', '/tmp/consul_raw.key') }}"
-  when:
-    - consul_raw_key is not defined
-    - bootstrap_state.stat.exists | bool
-
-- name: Delete gossip encryption key file
-  file:
-    path: /tmp/consul_raw.key
-    state: absent
-  become: false
-  vars:
-    ansible_become: false
-  when:
-    - consul_raw_key is defined
-    - bootstrap_state.stat.exists | bool
-  delegate_to: 127.0.0.1
-
-- block:
-    - name: Generate gossip encryption key
-      shell: "PATH={{ consul_bin_path }}:$PATH consul keygen"
-      register: consul_keygen
+    - name: Delete gossip encryption key file
+      file:
+        path: '/tmp/consul_raw.key'
+        state: absent
+      become: false
+      vars:
+        ansible_become: false
       run_once: true
-
-    - name: Write gossip encryption key to fact
-      set_fact: consul_raw_key={{ consul_keygen.stdout }}
+      delegate_to: 127.0.0.1
+      changed_when: false
+  no_log: true
   when:
-    - consul_raw_key is not defined
-    - not bootstrap_state.stat.exists | bool
+    - consul_encrypt_enable | bool
