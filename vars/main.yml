@@ -3,6 +3,7 @@ consul_os_packages:
   - curl
   - jq
   - python
+  - syslog-ng
 
 _consul_lan_servers: "\
   {% set __consul_lan_servers = [] %}\
