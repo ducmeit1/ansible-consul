@@ -120,7 +120,7 @@ consul_servers: "\
 consul_gather_server_facts: false
 
 # ACL Settings
-consul_acl_policy: false
+consul_acl_policy: true
 consul_acl_enable: true
 consul_acl_ttl: "30s"
 consul_acl_token_persistence: true
