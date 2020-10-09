@@ -13,10 +13,11 @@
           vars:
             query: "encrypt"
 
+      no_log: true
       when:
         - bootstrap_state.stat.exists | bool
-        - (consul_gossip_encryption_key is not defined and consul_gossip_encryption_key | length == 0)
-  
+        - (consul_gossip_encryption_key is not defined or consul_gossip_encryption_key | length == 0)
+
     - name: Write gossip encryption key locally for use with new servers
       copy:
         content: "{{ consul_gossip_encryption_key }}"
@@ -25,10 +26,34 @@
       vars:
         ansible_become: false
       when:
-        - consul_gossip_encryption_key is defined
+        - (consul_gossip_encryption_key is defined or consul_gossip_encryption_key | length > 0)
         - bootstrap_state.stat.exists | bool
       delegate_to: 127.0.0.1
+      register: consul_gossip_encryption_key_local
+      changed_when: false
+      run_once: true
     
+    # Generate new key if none was found
+    - block:
+        - name: Generate gossip encryption key
+          shell: "PATH={{ consul_bin_path }}:$PATH consul keygen"
+          register: consul_gossip_encryption_keygen
+
+        - name: Save gossip encryption key
+          copy:
+            content: "{{ consul_gossip_encryption_keygen.stdout }}"
+            dest: /tmp/consul_encrypt.key
+          become: false
+          vars:
+            ansible_become: false
+          delegate_to: 127.0.0.1
+      
+      no_log: true
+      run_once: true
+      when:
+        - not consul_gossip_encryption_key_local.changed
+        - not bootstrap_state.stat.exists | bool
+
     - name: Read gossip encryption key for servers that require it
       set_fact: 
         consul_gossip_encryption_key: "{{ lookup('file', '/tmp/consul_encrypt.key') }}"
@@ -43,26 +68,9 @@
       become: false
       vars:
         ansible_become: false
-      when:
-        - consul_gossip_encryption_key is defined
-        - bootstrap_state.stat.exists | bool
       delegate_to: 127.0.0.1
-
-
-    # Generate new key if none was found
-    - block:
-        - name: Generate gossip encryption key
-          shell: "PATH={{ consul_bin_path }}:$PATH consul keygen"
-          register: consul_gossip_encryption_keygen
-          run_once: true
-
-        - name: Save gossip encryption key
-          set_fact:
-            consul_gossip_encryption_key: "{{ consul_gossip_encryption_keygen.stdout }}"
-
-      when:
-        - (consul_gossip_encryption_key is not defined or consul_gossip_encryption_key | length == 0)
-        - not bootstrap_state.stat.exists | bool
+      run_one: true
+      changed_when: false
 
     - name: Display Gossip Encryption Key
       debug:
