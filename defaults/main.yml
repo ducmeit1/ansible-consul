@@ -31,6 +31,7 @@ consul_systemd_restart_sec: 42
 consul_systemd_limit_nofile: 65536
 
 # Log Settings
+syslog_user: "root"
 syslog_group: "adm"
 consul_log_level: "INFO"
 consul_log_rotate_bytes: 0
