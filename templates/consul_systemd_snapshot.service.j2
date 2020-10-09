@@ -17,6 +17,7 @@ ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=SIGTERM
 Restart=on-failure
 RestartSec=42s
+TimeoutSec=300s
 {% for var in consul_env_vars %}
 Environment={{ var }}
 {% endfor %}

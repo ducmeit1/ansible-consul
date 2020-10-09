@@ -18,13 +18,6 @@
     "advertise_addr": "{{ consul_advertise_address }}",
     "advertise_addr_wan": "{{ consul_advertise_address_wan }}",
     "translate_wan_addrs": {{ consul_translate_wan_address | bool | to_json }},
-    "client_addr": "{{ consul_client_address }}",
-    "addresses": {
-        "dns": "{{ consul_addresses.dns }}",
-        "http": "{{ consul_addresses.http }}",
-        "https": "{{ consul_addresses.https }}",
-        "grpc": "{{ consul_addresses.grpc }}"
-    },
     {## Ports Used ##}
     "ports": {
         "dns": {{ consul_ports.dns }},
@@ -56,13 +49,10 @@
     "log_rotate_duration": "{{ consul_log_rotate_duration }}",
     "log_rotate_max_files": {{ consul_log_rotate_max_files }},
     {% endif %}
-    "disable_update_check": {{ consul_disable_update_check | bool | to_json }},
-    "enable_script_checks": {{ consul_enable_script_checks | bool | to_json }},
-    "enable_local_script_checks": {{ consul_enable_local_script_checks | bool | to_json }},
-    {% if leave_on_terminate is defined %}
-    "leave_on_terminate": {{ leave_on_terminate | bool | to_json }},
-    {% endif %}
-    "http_max_conns_per_client": {{ consul_http_max_conns_per_client }},
+    "leave_on_terminate": {{ consul_leave_on_terminate | bool | to_json }},
+    "limits": {
+        "http_max_conns_per_client": {{ consul_http_max_conns_per_client }}
+    },
 
     {## Encryption and TLS ##}
     {% if consul_encrypt_enable | bool %}

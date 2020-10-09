@@ -9,9 +9,6 @@ User={{ consul_user }}
 Group={{ consul_group }}
 PIDFile={{ consul_run_path }}/consul.pid
 PermissionsStartOnly=true
-{% if consul_ui_legacy %}
-Environment=CONSUL_UI_LEGACY=true
-{% endif %}
 ExecStartPre=-/bin/mkdir -m 0750 -p {{ consul_run_path }}
 ExecStartPre=/bin/chown -R {{ consul_user }}:{{ consul_group }} {{ consul_run_path }}
 ExecStart={{ consul_bin_path }}/consul agent \
@@ -23,13 +20,14 @@ ExecStop={{ consul_bin_path }}/consul leave
 KillMode=process
 KillSignal=SIGTERM
 Restart=on-failure
-RestartSec={{ consul_systemd_restart_sec }}s
+RestartSec=42s
 StandardOutput=null
 StandardError=null
+TimeoutSec=300s
 {% for var in consul_env_vars %}
 Environment={{ var }}
 {% endfor %}
-LimitNOFILE={{ consul_systemd_limit_nofile }}
+LimitNOFILE=65536
 AmbientCapabilities=CAP_NET_BIND_SERVICE
 
 [Install]

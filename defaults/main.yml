@@ -27,8 +27,6 @@ consul_binary: "{{ consul_bin_path }}/consul"
 # Consul System User and Group Settings
 consul_user: "consul"
 consul_group: "consul"
-consul_systemd_restart_sec: 42
-consul_systemd_limit_nofile: 65536
 
 # Log Settings
 syslog_user: "root"
@@ -52,19 +50,15 @@ consul_recursors: []
 consul_bootstrap_expect: "{{ lookup('env','CONSUL_BOOTSTRAP_EXPECT') | default(false, true) }}"
 consul_bootstrap_expect_value: "{{ _consul_lan_servercount | int }}"
 consul_ui: true
-consul_ui_legacy: false
-consul_disable_update_check: false
-consul_enable_script_checks: false
-consul_enable_local_script_checks: false
 consul_raft_protocol: 3
 consul_retry_join_skip_hosts: false
 consul_retry_interval: "30s"
 consul_retry_interval_wan: "30s"
 consul_retry_max: 0
 consul_retry_max_wan: 0
-consul_env_vars:
-  - "CONSUL_UI_BETA=false"
+consul_env_vars: []
 consul_http_max_conns_per_client: 128
+consul_leave_on_terminate: false
 
 # Autopilot Settings
 consul_autopilot_enable: true
@@ -90,12 +84,7 @@ consul_bind_address: "{{ hostvars[inventory_hostname]['ansible_'+ consul_iface |
 consul_advertise_address: "{{ consul_bind_address }}"
 consul_advertise_address_wan: "{{ consul_bind_address }}"
 consul_translate_wan_address: false
-consul_client_address: '127.0.0.1'
-consul_addresses:
-  dns: "{{ consul_client_address }}"
-  http: "{{ consul_client_address }}"
-  https: "{{ consul_client_address }}"
-  grpc: "{{ consul_client_address }}"
+consul_client_address: '0.0.0.0'
 
 # Port Settings
 consul_ports:
@@ -120,7 +109,7 @@ consul_servers: "\
     {% endif %}\
   {% endfor %}\
   {{ _consul_servers }}"
-consul_gather_server_facts: false
+consul_gather_server_facts: true
 
 # ACL Settings
 consul_acl_policy: true
@@ -166,14 +155,8 @@ consul_tls_auto_encrypt: true
 # DNS Settings
 consul_delegate_datacenter_dns: false
 consul_dnsmasq_enable: true
-consul_dnsmasq_bind_interfaces: false
-consul_dnsmasq_consul_address: "
-  {# Use localhost if DNS is listening on all interfaces #}\
-  {% if consul_addresses.dns == '0.0.0.0' %}\
-    127.0.0.1\
-  {% else %}\
-    {{ consul_addresses.dns }}\
-  {% endif %}"
+consul_dnsmasq_bind_interfaces: true
+consul_dnsmasq_consul_address: "127.0.0.1"
 consul_dnsmasq_cache: -1
 consul_dnsmasq_servers:
   - 8.8.8.8
