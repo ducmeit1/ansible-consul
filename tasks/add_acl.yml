@@ -59,7 +59,6 @@
 
     - name: Save acl_replication_token from existing configuration
       set_fact: consul_acl_replication_token="{{ consul_acl_replication_token_read.stdout }}"
-      ignore_errors: true
 
   when:
     - bootstrap_state.stat.exists | bool
