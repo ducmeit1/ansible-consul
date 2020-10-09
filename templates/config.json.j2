@@ -57,7 +57,7 @@
 
     {## Encryption and TLS ##}
     {% if consul_encrypt_enable | bool %}
-    "encrypt": "{{ consul_raw_key }}",
+    "encrypt": "{{ consul_gossip_encryption_key }}",
     {% endif %}
     {% if consul_disable_keyring_file | bool %}
     "disable_keyring_file": true,

@@ -23,12 +23,9 @@
     
 - name: Add gossip encrpytion
   import_tasks: add_gossip_encryption.yml
-  when:
-    - consul_encrypt_enable | bool
 
 - name: Add ACL configuration
   import_tasks: add_acl.yml
-  when: consul_acl_enable | bool
 
 - name: Add Consul configuration
   import_tasks: add_consul_config.yml
