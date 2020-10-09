@@ -1,16 +1,25 @@
 # Install DNSMASQ
 
+- name: Check Dnsmasq exist
+  stat: 
+    path: '/etc/init.d/dnsmasq'
+  register: dnsmasq_service
+  changed_when: false
+  tags: dnsmasq, installation
+
 - name: Install Dnsmasq package
   apt:
     name: dnsmasq
     state: present
   tags: dnsmasq, installation
+  when: not dnsmasq_service.stat.exists | bool
 
 - name: Enable dnsmasq service
   service:
     name: dnsmasq
     enabled: true
   tags: dnsmasq
+  when: not dnsmasq_service.stat.exists | bool
 
 - name: Create Dnsmasq configuration
   template:
