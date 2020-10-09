@@ -121,7 +121,7 @@ consul_gather_server_facts: false
 
 # ACL Settings
 consul_acl_policy: false
-consul_acl_enable: false
+consul_acl_enable: true
 consul_acl_ttl: "30s"
 consul_acl_token_persistence: true
 consul_acl_datacenter: "{{ consul_datacenter }}"

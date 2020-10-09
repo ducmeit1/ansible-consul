@@ -1,0 +1,6 @@
+# Restart Consul
+
+- name: restart consul on Linux
+  service:
+    name: consul
+    state: restarted

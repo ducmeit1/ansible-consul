@@ -1,2 +1,5 @@
 - name: restart dnsmasq
   import_tasks: restart_dnsmasq.yml
+
+- name: restart consul
+  import_tasks: restart_consul.yml
