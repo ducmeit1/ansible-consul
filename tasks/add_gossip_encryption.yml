@@ -15,7 +15,7 @@
 
       when:
         - bootstrap_state.stat.exists | bool
-        - consul_gossip_encryption_key is not defined
+        - (consul_gossip_encryption_key is not defined and consul_gossip_encryption_key | length == 0)
   
     - name: Write gossip encryption key locally for use with new servers
       copy:
@@ -33,7 +33,7 @@
       set_fact: 
         consul_gossip_encryption_key: "{{ lookup('file', '/tmp/consul_encrypt.key') }}"
       when:
-        - consul_gossip_encryption_key is not defined
+        - (consul_gossip_encryption_key is not defined and consul_gossip_encryption_key | length == 0)
         - bootstrap_state.stat.exists | bool
     
     - name: Delete gossip encryption key file

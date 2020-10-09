@@ -130,6 +130,7 @@ consul_acl_master_token: ""
 consul_acl_master_token_display: true
 consul_acl_replication_enable: ""
 consul_acl_replication_token: ""
+consul_acl_replication_token_display: true
 
 # Gossip Encryption Settings
 consul_encrypt_enable: true

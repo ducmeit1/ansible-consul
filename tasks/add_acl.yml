@@ -23,7 +23,7 @@
       vars:
         ansible_become: false
       when:
-        - consul_acl_master_token is defined
+        - (consul_acl_master_token is defined and consul_acl_master_token | length > 0)
         - bootstrap_state.stat.exists | bool
       delegate_to: 127.0.0.1
     
@@ -31,7 +31,7 @@
       set_fact: 
         consul_acl_master_token: "{{ lookup('file', '/tmp/consul_acl_master.token') }}"
       when:
-        - consul_acl_master_token is not defined
+        - (consul_acl_master_token is not defined or consul_acl_master_token | length == 0)
         - bootstrap_state.stat.exists | bool
     
     - name: Delete acl master token file
@@ -92,7 +92,7 @@
       set_fact: 
         consul_acl_replication_token: "{{ lookup('file', '/tmp/consul_acl_replication.token') }}"
       when:
-        - consul_acl_replication_token is not defined
+        - c(consul_acl_replication_token is not defined or consul_acl_replication_token | length == 0)
         - bootstrap_state.stat.exists | bool
     
     - name: Delete acl master token file
@@ -145,6 +145,12 @@
         msg: "{{ consul_acl_master_token }}"
       when:
         - consul_acl_master_token_display | bool
+    
+    - name: Display ACL Replication Token
+      debug:
+        msg: "{{ consul_acl_replication_token }}"
+      when:
+        - consul_acl_replication_token_display | bool
     
   when:
     - consul_acl_enable | bool
