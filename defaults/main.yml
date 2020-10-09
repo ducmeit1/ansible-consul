@@ -17,6 +17,7 @@ consul_checksum_file_url: "https://releases.hashicorp.com/consul/{{ consul_versi
 consul_bin_path: "/usr/local/bin"
 consul_dir_path: "/opt/consul"
 consul_config_path: "{{ consul_dir_path }}/config"
+consul_acl_path: "{{ consul_dir_path }}/config/acl"
 consul_bootstrap_state_path: "{{ consul_dir_path }}/.consul_bootstrapped"
 consul_data_path: "{{ consul_dir_path }}/data"
 consul_log_path: "var/log/consul"

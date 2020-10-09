@@ -84,10 +84,18 @@
     - not bootstrap_state.stat.exists | bool
     - consul_node_role == 'server'
 
+- name: Create acl folder
+  file:
+    state: directory
+    path: "{{ consul_acl_path }}"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    mode: 0744
+
 - name: Create ACL policy configuration
   template:
     src: acl_policy.hcl.j2
-    dest: "{{ consul_config_path }}/acl_policy.hcl"
+    dest: "{{ consul_acl_path }}/acl_policy.hcl"
     owner: "{{ consul_user }}"
     group: "{{ consul_group }}"
   notify:
