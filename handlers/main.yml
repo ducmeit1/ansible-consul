@@ -10,6 +10,27 @@
     state: restarted
   listen: 'restart dnsmasq'
 
-- name: reload consul configuration
-  command: "pkill --pidfile '{{ consul_run_path }}/consul.pid' --signal SIGHUP"
-  listen: 'reload consul configuration'
+- name: restart syslog-ng
+  service:
+    name: syslog-ng
+    state: restarted
+  listen: 'restart syslog-ng'
+
+- name: restart rsyslog
+  service:
+    name: rsyslog
+    state: restarted
+  listen: 'restart rsyslog'
+
+- name: start consul
+  service:
+    name: consul
+    state: started
+  listen: 'start consul'
+
+- name: start consul snapshot
+  service:
+    name: consul_snapshot
+    state: started
+    enabled: true
+  listen: 'start snapshot'

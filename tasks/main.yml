@@ -50,3 +50,12 @@
 
 - name: Run consul
   import_tasks: run_consul.yml
+
+- name: Include services management
+  import_tasks: services_management.yml
+  when: consul_services is defined and consul_services|length>0
+  tags:
+    - consul_services
+
+- name: flush_handlers
+  meta: flush_handlers

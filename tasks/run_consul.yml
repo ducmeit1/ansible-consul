@@ -1,9 +1,7 @@
 - block:
     - name: Start Consul
-      service:
-        name: consul
-        state: started
-        enabled: true
+      notify: restart consul
+      tags: consul
 
     - name: Check Consul HTTP API (via TCP socket)
       wait_for:
