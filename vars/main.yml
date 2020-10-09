@@ -2,6 +2,7 @@ consul_os_packages:
   - unzip
   - curl
   - jq
+  - python
 
 _consul_lan_servers: "\
   {% set __consul_lan_servers = [] %}\
