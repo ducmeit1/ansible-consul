@@ -9,6 +9,8 @@ This ansible playbook helps you deploy consul cluster with multiple optionals
     ```shell
     sudo apt update -y
     sudo apt install -y git software-properties-common
+    sudo apt install -y python-pip
+    sudo pip install requirements.txt
     echo 'deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main' | sudo tee -a /etc/apt/sources.list
     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367
     sudo apt update -y
@@ -17,7 +19,7 @@ This ansible playbook helps you deploy consul cluster with multiple optionals
 
 # Ansible-Playbook
 
-- Use ansible-playbook to run:
+- Use ansible-playbook to run with examples:
 
     ```shell
     ansible-playbook site.yml
