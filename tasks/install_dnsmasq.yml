@@ -1,4 +1,4 @@
-# Install DNSMASQ
+# Install dnsmasq instead than iptables
 
 - name: Check Dnsmasq exist
   stat: 

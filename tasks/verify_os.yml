@@ -37,4 +37,3 @@
   fail:
     msg: "consul_group_name must be included in groups."
   when: consul_group_name not in groups
-

@@ -1,0 +1,31 @@
+- name: Create Debian init script
+  template:
+    src: consul_init.j2
+    dest: /etc/init.d/consul
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Create systemd script
+  template:
+    src: consul_systemd.service.j2
+    dest: /lib/systemd/system/consul.service
+    owner: root
+    group: root
+    mode: 0644
+  register: systemd_unit
+  notify: restart consul
+  when:
+    - ansible_service_mgr == "systemd"
+
+- name: Enable consul at startup (systemd)
+  systemd:
+    name: consul
+    enabled: yes
+  when:
+    - ansible_service_mgr == "systemd"
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: true
+  when: systemd_unit is changed

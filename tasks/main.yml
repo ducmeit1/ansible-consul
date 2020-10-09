@@ -3,33 +3,30 @@
 - name: Verify Debian and other requirements of OS
   import_tasks: verify_os.yml
 
-- name: Include variables
+- name: Add variables
   include_vars: "main.yml"
   tags: always
 
 - name: Prepare install Consul
   import_tasks: prepare_install.yml
 
-- name: Include user and group settings
+- name: Add user and group settings
   import_tasks: add_user_group.yml
 
-- name: Include directory settings
+- name: Add directory settings
   import_tasks: add_dirs.yml
 
 - name: Install consul
   import_tasks: install_consul.yml
   when:
     - consul_install_binary | bool
-
-- name: Install dnsmasq
-  import_tasks: install_dnsmasq.yml
-
+    
 - name: Add gossip encrpytion
   import_tasks: add_gossip_encryption.yml
   when:
     - consul_encrypt_enable | bool
 
-- name: Create ACL configuration
+- name: Add ACL configuration
   import_tasks: add_acl.yml
   when: consul_acl_enable | bool
 
@@ -38,3 +35,18 @@
 
 - name: Add TLS
   import_tasks: add_tls.yml
+
+- name: Add Syslog configuration
+  import_tasks: add_syslog.yml
+
+- name: Add SystemD for consul script
+  import_tasks: add_system_script.yml
+
+- name: Enable Consul Snapshots on servers
+  import_tasks: add_snapshot.yml
+  when:
+    - ansible_service_mgr == "systemd"
+    - consul_snapshot | bool
+
+- name: Run consul
+  import_tasks: run_consul.yml
