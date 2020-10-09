@@ -3,6 +3,7 @@
       - name: Check ACL master token from previously boostrapped server
         command: "cat {{ consul_config_path }}/config.json"
         register: consul_acl_master_token_read
+        run_once: true
 
       - name: Save acl_master_token from existing configuration
         set_fact:
@@ -10,21 +11,51 @@
         vars:
           query: "acl.tokens.master"
 
-      run_once: true
       when:
         - bootstrap_state.stat.exists | bool
         - (consul_acl_master_token is not defined or consul_acl_master_token | length == 0)
+
+    - name: Write acl master token locally for use with new servers
+      copy:
+        content: "{{ consul_acl_master_token }}"
+        dest: /tmp/consul_acl_master.token
+      become: false
+      vars:
+        ansible_become: false
+      when:
+        - consul_acl_master_token is defined
+        - bootstrap_state.stat.exists | bool
+      delegate_to: 127.0.0.1
+    
+    - name: Read acl master token for servers that require it
+      set_fact: 
+        consul_acl_master_token: "{{ lookup('file', '/tmp/consul_acl_master.token') }}"
+      when:
+        - consul_acl_master_token is not defined
+        - bootstrap_state.stat.exists | bool
+    
+    - name: Delete acl master token file
+      file:
+        path: /tmp/consul_acl_master.token
+        state: absent
+      become: false
+      vars:
+        ansible_become: false
+      when:
+        - consul_acl_master_token is defined
+        - bootstrap_state.stat.exists | bool
+      delegate_to: 127.0.0.1
 
     - block:
         - name: Generate ACL master token
           command: "echo {{ lookup('password', '/dev/null length=32 chars=ascii_letters') | to_uuid }}"
           register: consul_acl_master_token_keygen
+          run_once: true
           
         - name: Save ACL master token
           set_fact:
             consul_acl_master_token: "{{ consul_acl_master_token_keygen.stdout }}"
 
-      run_once: true
       when:
         - (consul_acl_master_token is not defined or consul_acl_master_token | length == 0)
         - not bootstrap_state.stat.exists | bool
@@ -33,6 +64,7 @@
         - name: Read ACL replication token from previously boostrapped server
           command: "cat {{ consul_config_path }}/config.json"
           register: consul_acl_replication_token_read
+          run_once: true
 
         - name: Save acl_replication_token from existing configuration
           set_fact: 
@@ -40,21 +72,51 @@
           vars:
             query: "acl.tokens.replication"
 
-      run_once: true
       when:
         - bootstrap_state.stat.exists | bool
         - (consul_acl_replication_token is not defined or consul_acl_replication_token | length == 0)
+
+    - name: Write acl replication token locally for use with new servers
+      copy:
+        content: "{{ consul_acl_replication_token }}"
+        dest: /tmp/consul_acl_replication.token
+      become: false
+      vars:
+        ansible_become: false
+      when:
+        - consul_acl_replication_token is defined
+        - bootstrap_state.stat.exists | bool
+      delegate_to: 127.0.0.1
+    
+    - name: Read acl replication token for servers that require it
+      set_fact: 
+        consul_acl_replication_token: "{{ lookup('file', '/tmp/consul_acl_replication.token') }}"
+      when:
+        - consul_acl_replication_token is not defined
+        - bootstrap_state.stat.exists | bool
+    
+    - name: Delete acl master token file
+      file:
+        path: /tmp/consul_acl_replication.token
+        state: absent
+      become: false
+      vars:
+        ansible_become: false
+      when:
+        - consul_acl_replication_token is defined
+        - bootstrap_state.stat.exists | bool
+      delegate_to: 127.0.0.1
 
     - block:
         - name: Generate ACL replication token
           command: "echo {{ lookup('password', '/dev/null length=32 chars=ascii_letters') | to_uuid }}"
           register: consul_acl_replication_token_keygen
+          run_once: true
 
         - name: Save ACL replication token
           set_fact:
             consul_acl_replication_token: "{{ consul_acl_replication_token_keygen.stdout }}"
 
-      run_once: true
       when:
         - (consul_acl_replication_token is not defined or consul_acl_replication_token | length == 0)
         - not bootstrap_state.stat.exists | bool
@@ -81,7 +143,6 @@
     - name: Display ACL Master Token
       debug:
         msg: "{{ consul_acl_master_token }}"
-      run_once: true
       when:
         - consul_acl_master_token_display | bool
     

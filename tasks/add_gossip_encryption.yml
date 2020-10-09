@@ -5,6 +5,7 @@
         - name: Check for gossip encryption key on previously boostrapped server
           command: "cat {{ consul_config_path }}/config.json"
           register: consul_gossip_encryption_key_read
+          run_once: true
 
         - name: Save gossip encryption key from existing configuration
           set_fact:
@@ -12,10 +13,40 @@
           vars:
             query: "encrypt"
 
-      run_once: true
+      when:
+        - bootstrap_state.stat.exists | bool
+        - consul_gossip_encryption_key is not defined
+  
+    - name: Write gossip encryption key locally for use with new servers
+      copy:
+        content: "{{ consul_gossip_encryption_key }}"
+        dest: /tmp/consul_encrypt.key
+      become: false
+      vars:
+        ansible_become: false
+      when:
+        - consul_gossip_encryption_key is defined
+        - bootstrap_state.stat.exists | bool
+      delegate_to: 127.0.0.1
+    
+    - name: Read gossip encryption key for servers that require it
+      set_fact: 
+        consul_gossip_encryption_key: "{{ lookup('file', '/tmp/consul_encrypt.key') }}"
       when:
         - consul_gossip_encryption_key is not defined
         - bootstrap_state.stat.exists | bool
+    
+    - name: Delete gossip encryption key file
+      file:
+        path: /tmp/consul_encrypt.key
+        state: absent
+      become: false
+      vars:
+        ansible_become: false
+      when:
+        - consul_gossip_encryption_key is defined
+        - bootstrap_state.stat.exists | bool
+      delegate_to: 127.0.0.1
 
 
     # Generate new key if none was found
@@ -23,12 +54,12 @@
         - name: Generate gossip encryption key
           shell: "PATH={{ consul_bin_path }}:$PATH consul keygen"
           register: consul_gossip_encryption_keygen
+          run_once: true
 
         - name: Save gossip encryption key
           set_fact:
             consul_gossip_encryption_key: "{{ consul_gossip_encryption_keygen.stdout }}"
 
-      run_once: true
       when:
         - (consul_gossip_encryption_key is not defined or consul_gossip_encryption_key | length == 0)
         - not bootstrap_state.stat.exists | bool
@@ -36,7 +67,6 @@
     - name: Display Gossip Encryption Key
       debug:
         msg: "{{ consul_gossip_encryption_key }}"
-      run_once: true
       when:
         - consul_encrpyt_key_display | bool
 
