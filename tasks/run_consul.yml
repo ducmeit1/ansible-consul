@@ -20,7 +20,7 @@
 
     - name: Create bootstrapped state file
       file:
-        dest: "{{ consul_bootstrap_state }}"
+        dest: "{{ consul_bootstrap_state_path }}"
         state: touch
     
     - include_tasks: install_iptables.yml
