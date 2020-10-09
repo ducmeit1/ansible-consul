@@ -9,7 +9,6 @@
           consul_acl_master_token: "{{ consul_acl_master_token_read.stdout | from_json | json_query(query) }}"
         vars:
           query: "acl.tokens.master"
-        no_log: true
 
       run_once: true
       when:
@@ -24,7 +23,6 @@
         - name: Save ACL master token
           set_fact:
             consul_acl_master_token: "{{ consul_acl_master_token_keygen.stdout }}"
-          no_log: true
 
       run_once: true
       when:
@@ -39,7 +37,6 @@
         - name: Save acl_replication_token from existing configuration
           set_fact: 
             consul_acl_replication_token: "{{ consul_acl_replication_token_read.stdout | from_json | json_query(query) }}"
-          no_log: true
 
       run_once: true
       when:
@@ -53,9 +50,8 @@
 
         - name: Save ACL replication token
           set_fact:
-            consul_acl_replication_token: "{{ consul_acl_replication_token_keygen.stdout }}"    
-          no_log: true
-          
+            consul_acl_replication_token: "{{ consul_acl_replication_token_keygen.stdout }}"
+
       run_once: true
       when:
         - (consul_acl_replication_token is not defined or consul_acl_replication_token | length == 0)
