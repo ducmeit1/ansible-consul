@@ -10,8 +10,8 @@
       group: "{{ consul_group }}"
       mode: 0700
     with_items:
+      - "{{ consul_dir_path }}"
       - "{{ consul_config_path }}"
-      - "{{ consul_configd_path }}"
       - "{{ consul_data_path }}"
   - name: Run directory
     file:
