@@ -87,8 +87,6 @@
     "retry_interval": "{{ consul_retry_interval }}",
     "retry_max": {{ consul_retry_max | int }},
 
-
-
     "retry_join":
     {% if not consul_cloud_autodiscovery | bool %}
         {% if not consul_retry_join_skip_hosts %}
@@ -158,6 +156,7 @@
             {% endif %}
         },
         {% endif %}
+    {% endif %}
 
     {% endif %}
 
