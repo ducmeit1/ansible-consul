@@ -34,4 +34,4 @@
   when: consul_acl_enable | bool
 
 - name: Add Consul configuration
-  import_tasks: add_consul_configuration.yml
+  import_tasks: add_consul_config.yml
