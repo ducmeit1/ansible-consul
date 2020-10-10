@@ -13,6 +13,7 @@
       - "{{ consul_dir_path }}"
       - "{{ consul_config_path }}"
       - "{{ consul_data_path }}"
+      - "{{ consul_log_path }}"
   - name: Run directory
     file:
       dest: "{{ consul_run_path }}"
@@ -20,13 +21,6 @@
       owner: "{{ consul_user }}"
       group: "{{ consul_group }}"
       mode: 0750
-
-- name: Create log directory
-  file:
-    dest: "{{ consul_log_path }}"
-    state: directory
-    owner: "{{ consul_user }}"
-    group: "{{ consul_group }}"
 
 - name: Verify binary path
   file:
