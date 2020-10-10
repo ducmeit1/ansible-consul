@@ -5,13 +5,13 @@
     path: '/etc/init.d/dnsmasq'
   register: dnsmasq_service
   changed_when: false
-  tags: dnsmasq, installation
+  tags: dnsmasq
 
 - name: Install Dnsmasq package
   apt:
     name: dnsmasq
     state: present
-  tags: dnsmasq, installation
+  tags: dnsmasq
   when: not dnsmasq_service.stat.exists | bool
 
 - name: Enable dnsmasq service

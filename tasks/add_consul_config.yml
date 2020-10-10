@@ -21,8 +21,7 @@
       when: "{{ consul_debug | bool }}"
   when:
     - item.when
-  notify:
-    - restart consul
+  notify: restart consul
 
 - name: Create custom configuration
   copy:
@@ -32,5 +31,4 @@
     content: "{{ lookup('template', 'templates/custom_config.json.j2') | to_nice_json }}"
   when:
     - consul_config_custom is defined
-  notify:
-    - restart consul
+  notify: restart consul

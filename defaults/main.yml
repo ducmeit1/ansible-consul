@@ -59,7 +59,7 @@ consul_retry_max: 0
 consul_retry_max_wan: 0
 consul_env_vars: []
 consul_http_max_conns_per_client: 128
-consul_leave_on_terminate: false
+consul_leave_on_terminate: true
 
 # Autopilot Settings
 consul_autopilot_enable: true

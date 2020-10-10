@@ -46,9 +46,10 @@
 
 - name: Enable Consul Snapshots on servers
   import_tasks: add_snapshot.yml
-  when:
-    - ansible_service_mgr == "systemd"
-    - consul_snapshot | bool
+  when: consul_snapshot | bool
+
+- name: Install DNS Forwarding
+  import_tasks: add_dns_forwarding.yml
 
 - name: Run consul
   import_tasks: run_consul.yml
@@ -56,8 +57,7 @@
 - name: Include services management
   import_tasks: services_management.yml
   when: consul_services is defined and consul_services|length>0
-  tags:
-    - consul_services
+  tags: consul_services
 
 - name: flush_handlers
   meta: flush_handlers

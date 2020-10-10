@@ -1,0 +1,7 @@
+- name: Install iptables
+  include_tasks: install_iptables.yml
+  when: consul_iptables_enable | bool
+
+- name: Install dnsmasq
+  include_tasks: install_dnsmasq.yml
+  when: consul_dnsmasq_enable | bool

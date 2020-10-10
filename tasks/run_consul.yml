@@ -5,6 +5,11 @@
         state: started
         enabled: true
 
+    - name: Create bootstrapped state file
+      file:
+        dest: "{{ consul_bootstrap_state_path }}"
+        state: touch
+    
     - name: Check Consul HTTP API (via TCP socket)
       wait_for:
         delay: 15
@@ -18,15 +23,4 @@
         path: "{{ consul_addresses.http | replace('unix://', '', 1) }}"
       when: consul_addresses.http is match("unix://*")
 
-    - name: Create bootstrapped state file
-      file:
-        dest: "{{ consul_bootstrap_state_path }}"
-        state: touch
-    
-    - include_tasks: install_iptables.yml
-      when: consul_iptables_enable | bool
-
   when: not bootstrap_state.stat.exists
-
-- include_tasks: install_dnsmasq.yml
-  when: consul_dnsmasq_enable | bool

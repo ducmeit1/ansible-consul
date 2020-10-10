@@ -3,6 +3,7 @@
 - name: Install iptables
   apt:
     name: iptables
+  tags: iptables
 
 - name: Redirect local DNS (1/4)
   iptables:
@@ -13,6 +14,7 @@
     destination_port: 53
     jump: REDIRECT
     to_ports: 8600
+  tags: iptables
 
 - name: Redirect local DNS (2/4)
   iptables:
@@ -23,6 +25,7 @@
     destination_port: 53
     jump: REDIRECT
     to_ports: 8600
+  tags: iptables
 
 - name: Redirect local DNS (3/4)
   iptables:
@@ -34,6 +37,7 @@
     jump: REDIRECT
     to_ports: 8600
     destination: localhost
+  tags: iptables
 
 - name: Redirect local DNS (4/4)
   iptables:
@@ -45,3 +49,4 @@
     jump: REDIRECT
     to_ports: 8600
     destination: localhost
+  tags: iptables

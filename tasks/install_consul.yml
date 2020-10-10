@@ -52,8 +52,7 @@
     group: "{{ consul_group }}"
     mode: 0755
   register: consul_install
-  notify:
-    - restart consul
+  notify: restart consul
   when: consul_download is changed
   tags: consul-installation
 

@@ -32,3 +32,4 @@
   when:
     - consul_gossip_encryption_key is defined and consul_gossip_encryption_key | trim != ''
     - consul_encrpyt_key_display | bool
+  run_once: true
