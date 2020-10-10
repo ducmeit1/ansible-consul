@@ -27,21 +27,6 @@
     state: directory
     owner: "{{ consul_user }}"
     group: "{{ consul_group }}"
-  when:
-    - not consul_syslog_enable | bool
-    - not consul_configure_syslogd | bool
-
-- name: Create log directory
-  file:
-    dest: "{{ item }}"
-    state: directory
-    owner: "{{ syslog_user }}"
-    group: "{{ syslog_group }}"
-  with_items:
-    - "{{ consul_log_path }}"
-  when:
-    - consul_syslog_enable | bool
-    - consul_configure_syslogd | bool
 
 - name: Verify binary path
   file:
