@@ -14,6 +14,7 @@
 
   when:
     - consul_acl_master_token is not defined or consul_acl_master_token | trim == ''
+    - bootstrap_state.stat.exists
   tags: acl-policy
 
 - block:
@@ -28,6 +29,7 @@
 
   when:
     - consul_acl_master_token is not defined or consul_acl_master_token | trim == ''
+    - not bootstrap_state.stat.exists
   tags: acl-policy
 
 - block:
@@ -44,6 +46,7 @@
 
   when:
     - consul_acl_replication_token is not defined or consul_acl_replication_token | trim == ''
+    - bootstrap_state.stat.exists
   tags: acl-policy
 
 - block:
@@ -58,6 +61,7 @@
 
   when:
     - consul_acl_replication_token is not defined or consul_acl_replication_token | trim == ''
+    - not bootstrap_state.stat.exists
   tags: acl-policy
 
 - name: Display ACL Master Token

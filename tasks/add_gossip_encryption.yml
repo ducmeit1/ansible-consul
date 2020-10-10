@@ -1,6 +1,6 @@
 # Add gossip encryption
 
-- block:
+- block:      
     - name: Check for gossip encryption key on previously boostrapped server
       command: "cat {{ consul_config_path }}/config.json"
       register: consul_gossip_encryption_key_read
@@ -14,6 +14,8 @@
         
   when:
     - consul_gossip_encryption_key is not defined or consul_gossip_encryption_key | trim == ''
+    - bootstrap_state.stat.exists
+  tags: gossip-encryption
 
 - block:
     - name: Generate gossip encryption key
@@ -25,6 +27,8 @@
       set_fact: consul_gossip_encryption_key={{ consul_keygen.stdout }}
   when:
     - consul_gossip_encryption_key is not defined or consul_gossip_encryption_key | trim == ''
+    - not bootstrap_state.stat.exists
+  tags: gossip-encryption
 
 - name: Display Gossip Encryption Key
   debug:
@@ -33,3 +37,4 @@
     - consul_gossip_encryption_key is defined and consul_gossip_encryption_key | trim != ''
     - consul_encrpyt_key_display | bool
   run_once: true
+  tags: gossip-encryption
