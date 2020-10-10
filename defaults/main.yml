@@ -40,7 +40,7 @@ consul_syslog_facility: "LOCAL0"
 consul_configure_syslogd: true
 
 # Consul Settings
-consul_datacenter: "dc1"
+consul_datacenter: "dc1-gcp"
 consul_domain: "consul"
 consul_alt_domain: ""
 consul_node_meta: {}
@@ -73,7 +73,7 @@ consul_autopilot_upgrade_version_tag: ""
 consul_cloud_autodiscovery: true
 consul_cloud_autodiscovery_provider: "gce"
 consul_cloud_autodiscovery_gce_projectid: "driven-stage-269911"
-consul_cloud_autodiscovery_gce_tag_value: "consul"
+consul_cloud_autodiscovery_gce_tag_value: "{{ consul_datacenter }}"
 consul_cloud_autodiscovery_zone_pattern: "asia-southeast1-.*"
 consul_cloud_autodiscovery_params: "project_name={{ consul_cloud_autodiscovery_gce_projectid }} zone_pattern={{ consul_cloud_autodiscovery_zone_pattern }} tag_value={{ consul_cloud_autodiscovery_gce_tag_value }}"
 consul_cloud_autodiscovery_string: "provider={{ consul_cloud_autodiscovery_provider }} {{ consul_cloud_autodiscovery_params }}"
