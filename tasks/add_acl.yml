@@ -20,7 +20,7 @@
 - name: Write acl master token locally for use with new servers
   copy:
     content: "{{ consul_acl_master_token }}"
-    dest: /tmp/consul_acl_master.token
+    dest: /tmp/consul_acl_master_token.key
   become: no
   when:
     - (consul_acl_master_token is defined and consul_acl_master_token | trim != '')
@@ -29,7 +29,7 @@
 
 - name: Read acl master token for servers that require it
   set_fact:
-    consul_acl_master_token: "{{ lookup('file', '/tmp/consul_acl_master.token') }}"
+    consul_acl_master_token: "{{ lookup('file', '/tmp/consul_acl_master_token.key') }}"
   when:
     - (consul_acl_master_token is not defined or consul_acl_master_token | trim == '')
     - bootstrap_state.stat.exists | bool
@@ -37,7 +37,7 @@
 
 - name: Delete acl master token file
   file:
-    path: /tmp/consul_acl_master.token
+    path: /tmp/consul_acl_master_token.key
     state: absent
   become: no
   when:
@@ -80,7 +80,7 @@
 - name: Write acl replication token locally for use with new servers
   copy:
     content: "{{ consul_acl_replication_token }}"
-    dest: /tmp/consul_acl_replication.token
+    dest: /tmp/consul_acl_replication_token.key
   become: no
   when:
     - (consul_acl_replication_token is defined and consul_acl_replication_token | trim != '')
@@ -89,7 +89,7 @@
 
 - name: Read acl replication token for servers that require it
   set_fact:
-    consul_acl_replication_token: "{{ lookup('file', '/tmp/consul_acl_replication.token') }}"
+    consul_acl_replication_token: "{{ lookup('file', '/tmp/consul_acl_replication_token.key') }}"
   when:
     - (consul_acl_replication_token is not defined or consul_acl_replication_token | trim == '')
     - bootstrap_state.stat.exists | bool
@@ -97,7 +97,7 @@
 
 - name: Delete acl master token file
   file:
-    path: /tmp/consul_acl_replication.token
+    path: /tmp/consul_acl_replication_token.key
     state: absent
   become: no
   when:
