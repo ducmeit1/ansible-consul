@@ -29,15 +29,10 @@ consul_user: "consul"
 consul_group: "consul"
 
 # Log Settings
-syslog_user: "root"
-syslog_group: "adm"
 consul_log_level: "INFO"
 consul_log_rotate_bytes: 0
 consul_log_rotate_duration: "24h"
 consul_log_rotate_max_files: 0
-consul_syslog_enable: true
-consul_syslog_facility: "LOCAL0"
-consul_configure_syslogd: true
 
 # Consul Settings
 consul_datacenter: "dc1-gcp"

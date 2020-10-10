@@ -9,8 +9,8 @@
 
     - name: Create ACL policy default configuration
       template:
-        src: acl_policy.hcl.j2
-        dest: "{{ consul_acl_path }}/acl_policy.hcl"
+        src: acl_policy_bootstrap.j2
+        dest: "{{ consul_acl_path }}/acl_policy_bootstrap"
         owner: "{{ consul_user }}"
         group: "{{ consul_group }}"
 

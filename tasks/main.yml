@@ -37,9 +37,6 @@
 - name: Add TLS
   import_tasks: add_tls.yml
 
-- name: Add Syslog configuration
-  import_tasks: add_syslog.yml
-
 - name: Add SystemD for consul script
   import_tasks: add_system_script.yml
 
@@ -52,6 +49,9 @@
 
 - name: Run consul
   import_tasks: run_consul.yml
+
+- name: Bootstrap ACL
+  import_tasks: bootstrap_acl.yml
 
 - name: Include services management
   import_tasks: services_management.yml
