@@ -36,7 +36,7 @@
       register: consul_acl_replication_token_read
       run_once: true
 
-    - name: Save acl_replication_token from existing configuration
+    - name: Save ACL replication token from existing configuration
       set_fact:
         consul_acl_replication_token: "{{ consul_acl_replication_token_read.stdout | from_json | json_query(query) }}"
       vars:
@@ -79,21 +79,47 @@
   tags: acl-policy
 
 - block:
-    - name: Create acl folder
-      file:
-        state: directory
-        path: "{{ consul_acl_path }}"
-        owner: "{{ consul_user }}"
-        group: "{{ consul_group }}"
-        mode: 0744
+    - name: Check ACL master token from previously boostrapped server
+      command: "cat {{ consul_config_path }}/config.json"
+      register: consul_acl_master_token_read
+      run_once: true
 
-    - name: Create ACL policy default configuration
-      template:
-        src: acl_policy.hcl.j2
-        dest: "{{ consul_acl_path }}/acl_policy.hcl"
-        owner: "{{ consul_user }}"
-        group: "{{ consul_group }}"
+    - name: Save ACL master token from existing configuration
+      set_fact:
+        consul_acl_master_token: "{{ consul_acl_master_token_read.stdout | from_json | json_query(query) }}"
+      vars:
+        query: "acl.tokens.master"
 
   when:
-    - consul_acl_policy | bool
+    - consul_acl_master_token is not defined or consul_acl_master_token | trim == ''
+  tags: acl-policy
+
+- block:
+    - name: Generate ACL agent token
+      command: "echo {{ lookup('password', '/dev/null length=32 chars=ascii_letters') | to_uuid }}"
+      register: consul_acl_agent_token_keygen
+      run_once: true
+
+    - name: Save ACL agent token
+      set_fact:
+        consul_acl_agent_token: "{{ consul_acl_agent_token_keygen.stdout }}"
+
+  when:
+    - consul_acl_agent_token is not defined or consul_acl_agent_token | trim == ''
+  tags: acl-policy
+
+- block:
+    - name: Read ACL agent token from previously boostrapped server
+      command: "cat {{ consul_config_path }}/config.json"
+      register: consul_acl_agent_token_read
+      run_once: true
+
+    - name: Save ACL agent token from existing configuration
+      set_fact:
+        consul_acl_agent_token: "{{ consul_acl_agent_token_read.stdout | from_json | json_query(query) }}"
+      vars:
+        query: "acl.tokens.agent"
+
+  when:
+    - consul_acl_agent_token is not defined or consul_acl_agent_token | trim == ''
   tags: acl-policy

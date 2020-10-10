@@ -1,5 +1,4 @@
 # Common Settings
-consul_debug: false
 is_virtualenv: ""
 consul_install_dependencies: true
 consul_install_upgrade: false
@@ -37,7 +36,7 @@ consul_log_rotate_bytes: 0
 consul_log_rotate_duration: "24h"
 consul_log_rotate_max_files: 0
 consul_syslog_enable: true
-consul_syslog_facility: "local0"
+consul_syslog_facility: "LOCAL0"
 consul_configure_syslogd: true
 
 # Consul Settings
@@ -46,7 +45,6 @@ consul_domain: "consul"
 consul_alt_domain: ""
 consul_node_meta: {}
 consul_iface: "{{ ansible_default_ipv4.interface }}"
-consul_node_role: "{{ lookup('env','CONSUL_NODE_ROLE') | default('client', true) }}"
 consul_recursors: []
 consul_bootstrap_expect: true
 consul_bootstrap_expect_value: "{{ _consul_lan_servercount | int }}"
@@ -72,7 +70,7 @@ consul_autopilot_disable_upgrade_migration: "false"
 consul_autopilot_upgrade_version_tag: ""
 
 # Cloud Auto Discovery Settings (Only Support GCP)
-consul_cloud_autodiscovery: false
+consul_cloud_autodiscovery: true
 consul_cloud_autodiscovery_provider: "gce"
 consul_cloud_autodiscovery_gce_projectid: "driven-stage-269911"
 consul_cloud_autodiscovery_gce_tag_value: "consul"
@@ -83,7 +81,6 @@ consul_cloud_autodiscovery_string: "provider={{ consul_cloud_autodiscovery_provi
 # Address Settings
 consul_bind_address: "{{ hostvars[inventory_hostname]['ansible_'+ consul_iface | replace('-', '_')]['ipv4']['address'] }}"
 consul_advertise_address: "{{ consul_bind_address }}"
-consul_advertise_address_wan: "{{ consul_bind_address }}"
 consul_translate_wan_address: false
 consul_client_address: "0.0.0.0"
 consul_addresses:
@@ -107,10 +104,7 @@ consul_join_wan: []
 consul_servers: "\
   {% set _consul_servers = [] %}\
   {% for host in groups[consul_group_name] %}\
-    {% set _consul_node_role = hostvars[host]['consul_node_role'] | default('client', true) %}\
-    {% if ( _consul_node_role == 'server' or _consul_node_role == 'bootstrap') %}\
       {% if _consul_servers.append(host) %}{% endif %}\
-    {% endif %}\
   {% endfor %}\
   {{ _consul_servers }}"
 
@@ -124,7 +118,7 @@ consul_acl_down_policy: "extend-cache"
 consul_acl_token: ""
 consul_acl_agent_token: ""
 consul_acl_agent_master_token: ""
-consul_acl_default_policy: "deny"
+consul_acl_default_policy: "allow"
 consul_acl_master_token: ""
 consul_acl_master_token_display: true
 consul_acl_replication_enable: ""
@@ -135,7 +129,6 @@ consul_acl_replication_token_display: true
 consul_encrypt_enable: true
 consul_encrypt_verify_incoming: true
 consul_encrypt_verify_outgoing: true
-consul_disable_keyring_file: false
 consul_encrpyt_key_display: true
 
 # TLS Settings
@@ -150,11 +143,8 @@ consul_tls_verify_incoming: true
 consul_tls_verify_outgoing: true
 consul_tls_verify_incoming_rpc: true
 consul_tls_verify_incoming_https: true
-consul_tls_verify_server_hostname: true
+consul_tls_verify_server_hostname: false
 consul_tls_files_remote_src: false
-consul_tls_min_version: "tls12"
-consul_tls_cipher_suites: ""
-consul_tls_prefer_server_cipher_suites: false
 consul_tls_auto_encrypt: true
 
 # DNS Settings
@@ -192,5 +182,5 @@ consul_services: []
 
 # Consul Connect Settings
 consul_connect_enabled: true
-consul_mesh_gateway_wan_federation_enabled: true
+consul_mesh_gateway_wan_federation_enabled: false
 consul_mesh_gateway_primary_gateways: []

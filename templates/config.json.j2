@@ -16,8 +16,7 @@
     "client_addr": "{{ consul_client_address }}",
     "bind_addr": "{{ consul_bind_address }}",
     "advertise_addr": "{{ consul_advertise_address }}",
-    "advertise_addr_wan": "{{ consul_advertise_address_wan }}",
-    "translate_wan_addrs": {{ consul_translate_wan_address | bool | to_json }},
+
     {## Ports Used ##}
     "ports": {
         "dns": {{ consul_ports.dns }},
@@ -61,8 +60,6 @@
     "encrypt": "{{ consul_gossip_encryption_key }}",
     {% endif %}
 
-    "disable_keyring_file": {{ consul_disable_keyring_file | bool | to_json }},
-    
     {% if consul_tls_enable | bool %}
     "ca_file": "{{ consul_tls_dir }}/{{ consul_tls_ca_crt | basename }}",
     "cert_file": "{{ consul_tls_dir }}/{{ consul_tls_server_crt | basename }}",
@@ -71,11 +68,6 @@
     "verify_outgoing": {{ consul_tls_verify_outgoing | bool | to_json }},
     "verify_incoming_https": {{consul_tls_verify_incoming_https | bool| to_json }},
     "verify_server_hostname": {{ consul_tls_verify_server_hostname | bool | to_json }},
-    "tls_min_version": "{{ consul_tls_min_version }}",
-    {% if consul_tls_cipher_suites is defined and consul_tls_cipher_suites %}
-    "tls_cipher_suites": "{{ consul_tls_cipher_suites}}",
-    {% endif %}
-    "tls_prefer_server_cipher_suites": {{ consul_tls_prefer_server_cipher_suites | bool | to_json }},
 
     {% if consul_tls_auto_encrypt | bool %}
     "auto_encrypt": {
@@ -132,11 +124,11 @@
 
     {## ACLs ##}
     {% if consul_acl_enable | bool %}
-        "enable_acl_replication": {{ consul_acl_replication_enable | bool | to_json }},
         "primary_datacenter": "{{ consul_acl_datacenter }}",
         "acl": {
             "enabled": true,
             "default_policy": "{{ consul_acl_default_policy }}",
+            "enable_token_persistence": {{ consul_acl_token_persistence | bool | to_json }},
             "down_policy": "{{ consul_acl_down_policy }}",
             "token_ttl": "{{ consul_acl_ttl }}",
             "tokens": {

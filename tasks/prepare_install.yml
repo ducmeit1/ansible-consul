@@ -50,7 +50,6 @@
 
 - name: Expose advertise_address(_wan) datacenter
   set_fact:
-    consul_advertise_address_wan: "{{ consul_advertise_address_wan }}"
     consul_advertise_address: "{{ consul_advertise_address }}"
     consul_bind_address: "{{ consul_bind_address }}"
     consul_datacenter: "{{ consul_datacenter }}"

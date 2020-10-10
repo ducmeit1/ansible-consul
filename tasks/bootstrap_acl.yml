@@ -1,0 +1,20 @@
+- block:
+    - name: Create acl folder
+      file:
+        state: directory
+        path: "{{ consul_acl_path }}"
+        owner: "{{ consul_user }}"
+        group: "{{ consul_group }}"
+        mode: 0744
+
+    - name: Create ACL policy default configuration
+      template:
+        src: acl_policy.hcl.j2
+        dest: "{{ consul_acl_path }}/acl_policy.hcl"
+        owner: "{{ consul_user }}"
+        group: "{{ consul_group }}"
+
+  when:
+    - consul_acl_enable | bool
+    - consul_acl_policy | bool
+  tags: bootstrap-acl-policy
