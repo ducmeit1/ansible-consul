@@ -13,37 +13,43 @@
         query: "acl.tokens.master"
 
   when:
-    - bootstrap_state.stat.exists | bool
-    - (consul_acl_master_token is not defined or consul_acl_master_token | trim == '')
+    - consul_acl_master_token is not defined or consul_acl_master_token | trim == ''
   tags: acl-policy
 
-- name: Write acl master token locally for use with new servers
-  copy:
-    content: "{{ consul_acl_master_token }}"
-    dest: /tmp/consul_acl_master_token.key
-  become: no
-  when:
-    - (consul_acl_master_token is defined and consul_acl_master_token | trim != '')
-    - bootstrap_state.stat.exists | bool
-  tags: acl-policy
+# - name: Write acl master token locally for use with new servers
+#   copy:
+#     content: "{{ consul_acl_master_token }}"
+#     dest: /tmp/consul_acl_master_token.key
+#   become: no
+#   when:
+#     - (consul_acl_master_token is defined and consul_acl_master_token | trim != '')
+#     - bootstrap_state.stat.exists | bool
+#   tags: acl-policy
 
-- name: Read acl master token for servers that require it
-  set_fact:
-    consul_acl_master_token: "{{ lookup('file', '/tmp/consul_acl_master_token.key') }}"
-  when:
-    - (consul_acl_master_token is not defined or consul_acl_master_token | trim == '')
-    - bootstrap_state.stat.exists | bool
-  tags: acl-policy
+# - name: Stat acl master token is exist
+#   stat:
+#     path: /tmp/consul_acl_master_token.key
+#   register: consul_acl_master_token
 
-- name: Delete acl master token file
-  file:
-    path: /tmp/consul_acl_master_token.key
-    state: absent
-  become: no
-  when:
-    - (consul_acl_master_token is defined and consul_acl_master_token | trim != '')
-    - bootstrap_state.stat.exists | bool
-  tags: acl-policy
+# - name: Read acl master token for servers that require it
+#   set_fact:
+#     consul_acl_master_token: "{{ lookup('file', '/tmp/consul_acl_master_token.key') }}"
+#   when:
+#     - (consul_acl_master_token is not defined or consul_acl_master_token | trim == '')
+#     - bootstrap_state.stat.exists | bool
+#     - consul_acl_master_token.stat.exists
+#   tags: acl-policy
+
+# - name: Delete acl master token file
+#   file:
+#     path: /tmp/consul_acl_master_token.key
+#     state: absent
+#   become: no
+#   when:
+#     - (consul_acl_master_token is defined and consul_acl_master_token | trim != '')
+#     - bootstrap_state.stat.exists | bool
+#     - consul_acl_master_token.stat.exists
+#   tags: acl-policy
 
 - block:
     - name: Generate ACL master token
@@ -56,8 +62,7 @@
         consul_acl_master_token: "{{ consul_acl_master_token_keygen.stdout }}"
 
   when:
-    - (consul_acl_master_token is not defined or consul_acl_master_token | trim == '')
-    - not bootstrap_state.stat.exists | bool
+    - consul_acl_master_token is not defined or consul_acl_master_token | trim == ''
   tags: acl-policy
 
 - block:
@@ -73,37 +78,36 @@
         query: "acl.tokens.replication"
 
   when:
-    - (consul_acl_replication_token is not defined or consul_acl_replication_token | trim == '')
-    - bootstrap_state.stat.exists | bool
+    - consul_acl_replication_token is not defined or consul_acl_replication_token | trim == ''
   tags: acl-policy
 
-- name: Write acl replication token locally for use with new servers
-  copy:
-    content: "{{ consul_acl_replication_token }}"
-    dest: /tmp/consul_acl_replication_token.key
-  become: no
-  when:
-    - (consul_acl_replication_token is defined and consul_acl_replication_token | trim != '')
-    - bootstrap_state.stat.exists | bool
-  tags: acl-policy
+# - name: Write acl replication token locally for use with new servers
+#   copy:
+#     content: "{{ consul_acl_replication_token }}"
+#     dest: /tmp/consul_acl_replication_token.key
+#   become: no
+#   when:
+#     - (consul_acl_replication_token is defined and consul_acl_replication_token | trim != '')
+#     - bootstrap_state.stat.exists | bool
+#   tags: acl-policy
 
-- name: Read acl replication token for servers that require it
-  set_fact:
-    consul_acl_replication_token: "{{ lookup('file', '/tmp/consul_acl_replication_token.key') }}"
-  when:
-    - (consul_acl_replication_token is not defined or consul_acl_replication_token | trim == '')
-    - bootstrap_state.stat.exists | bool
-  tags: acl-policy
+# - name: Read acl replication token for servers that require it
+#   set_fact:
+#     consul_acl_replication_token: "{{ lookup('file', '/tmp/consul_acl_replication_token.key') }}"
+#   when:
+#     - (consul_acl_replication_token is not defined or consul_acl_replication_token | trim == '')
+#     - bootstrap_state.stat.exists | bool
+#   tags: acl-policy
 
-- name: Delete acl master token file
-  file:
-    path: /tmp/consul_acl_replication_token.key
-    state: absent
-  become: no
-  when:
-    - (consul_acl_replication_token is defined and consul_acl_replication_token | trim != '')
-    - bootstrap_state.stat.exists | bool
-  tags: acl-policy
+# - name: Delete acl master token file
+#   file:
+#     path: /tmp/consul_acl_replication_token.key
+#     state: absent
+#   become: no
+#   when:
+#     - (consul_acl_replication_token is defined and consul_acl_replication_token | trim != '')
+#     - bootstrap_state.stat.exists | bool
+#   tags: acl-policy
 
 - block:
     - name: Generate ACL replication token
@@ -116,15 +120,14 @@
         consul_acl_replication_token: "{{ consul_acl_replication_token_keygen.stdout }}"
 
   when:
-    - (consul_acl_replication_token is not defined or consul_acl_replication_token | trim == '')
-    - not bootstrap_state.stat.exists | bool
+    - consul_acl_replication_token is not defined or consul_acl_replication_token | trim == ''
   tags: acl-policy
 
 - name: Display ACL Master Token
   debug:
     msg: "{{ consul_acl_master_token }}"
   when:
-    - (consul_acl_master_token is defined and consul_acl_master_token | trim != '')
+    - consul_acl_master_token is defined and consul_acl_master_token | trim != ''
     - consul_acl_master_token_display | bool
   tags: acl-policy
 
@@ -132,7 +135,7 @@
   debug:
     msg: "{{ consul_acl_replication_token }}"
   when:
-    - (consul_acl_replication_token is defined and consul_acl_replication_token | trim != '')
+    - consul_acl_replication_token is defined and consul_acl_replication_token | trim != ''
     - consul_acl_replication_token_display | bool
   tags: acl-policy
 
