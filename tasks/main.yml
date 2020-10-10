@@ -30,7 +30,6 @@
   import_tasks: add_acl.yml
   when:
     - consul_acl_enable | bool
-    - consul_node_role == 'server'
 
 - name: Add Consul configuration
   import_tasks: add_consul_config.yml

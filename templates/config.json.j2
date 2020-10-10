@@ -12,7 +12,6 @@
     "node_meta": {{ consul_node_meta | default({})| to_json }},
     {# Performance Settings #}
     "performance": {{ consul_performance | to_json }},
-    "pid_file": "{{ consul_run_path }}/consul.pid",
     {## Addresses ##}
     "client_addr": "{{ consul_client_address }}",
     "bind_addr": "{{ consul_bind_address }}",
@@ -51,6 +50,8 @@
     "log_rotate_max_files": {{ consul_log_rotate_max_files }},
     {% endif %}
     "leave_on_terminate": {{ consul_leave_on_terminate | bool | to_json }},
+
+    {## Limit HTTP Connections Per Client ##}
     "limits": {
         "http_max_conns_per_client": {{ consul_http_max_conns_per_client }}
     },
@@ -59,9 +60,9 @@
     {% if consul_encrypt_enable | bool %}
     "encrypt": "{{ consul_gossip_encryption_key }}",
     {% endif %}
-    {% if consul_disable_keyring_file | bool %}
-    "disable_keyring_file": true,
-    {% endif %}
+
+    "disable_keyring_file": {{ consul_disable_keyring_file | bool | to_json }},
+    
     {% if consul_tls_enable | bool %}
     "ca_file": "{{ consul_tls_dir }}/{{ consul_tls_ca_crt | basename }}",
     "cert_file": "{{ consul_tls_dir }}/{{ consul_tls_server_crt | basename }}",
@@ -75,10 +76,10 @@
     "tls_cipher_suites": "{{ consul_tls_cipher_suites}}",
     {% endif %}
     "tls_prefer_server_cipher_suites": {{ consul_tls_prefer_server_cipher_suites | bool | to_json }},
+
     {% if consul_tls_auto_encrypt | bool %}
     "auto_encrypt": {
-        "allow_tls": true,
-        "tls": true
+        "allow_tls": true
     },
     {% endif %}
     {% endif %}
@@ -99,8 +100,8 @@
     ["{{ consul_cloud_autodiscovery_string }}"],
     {% endif %}
 
-    {## Server/Client ##}
-    "server": {{ (item.config_version != 'client') | bool | to_json }},
+    {## Server ##}
+    "server": true,
 
     {## Enable Connect on Server ##}
     {% if consul_connect_enabled | bool %}
@@ -110,68 +111,23 @@
     },
     "primary_gateways": {{ consul_mesh_gateway_primary_gateways | to_json }},
     {% endif %}
-
-    {# Client Settings #}
-    {% if (item.config_version == 'client') %}
-        {## ACLs ##}
-        {% if consul_acl_enable | bool %}
-                "primary_datacenter": "{{ consul_acl_datacenter }}",
-                "acl": {
-                    "enabled": true,
-                    "default_policy": "{{ consul_acl_default_policy }}",
-                    "down_policy": "{{ consul_acl_down_policy }}",
-                    "token_ttl": "{{ consul_acl_ttl }}",
-                    "tokens": {
-                        {% if consul_acl_token | trim != '' %}
-                        "default": "{{ consul_acl_token }}",
-                        {% endif %}
-                        {% if consul_acl_agent_token | trim != '' %}
-                        "agent": "{{ consul_acl_agent_token }}",
-                        {% endif %}
-                        {% if consul_acl_agent_master_token | trim != '' %}
-                        "agent_master": "{{ consul_acl_agent_master_token }}",
-                        {% endif %}
-                    }
-                },
-        {% endif %}
-    {% endif %}
-
-    {# Server Settings #}
-    {% if (item.config_version == 'server') or (item.config_version == 'bootstrap') %}
-
+    
     {## Bootstrap settings ##}
-    "bootstrap": {{ (item.config_version == 'bootstrap') | bool | to_json }},
-    {% if consul_bootstrap_expect and not (item.config_version == 'bootstrap') %}
-        "bootstrap_expect": {{ consul_bootstrap_expect_value }},
+    "bootstrap_expect": {{ consul_bootstrap_expect_value }},
 
-        {## AutoPilot ##}
-        {% if consul_autopilot_enable | bool %}
-        "autopilot": {
-            "cleanup_dead_servers": {{ consul_autopilot_cleanup_dead_Servers | bool | to_json }},
-            "last_contact_threshold": "{{ consul_autopilot_last_contact_threshold }}",
-            "max_trailing_logs": {{ consul_autopilot_max_trailing_logs }},
-            "server_stabilization_time": "{{ consul_autopilot_server_stabilization_time }}"{{ ',' if consul_enterprise else '' }}
-            {% if consul_enterprise %}
-            "redundancy_zone_tag":  "{{ consul_autopilot_redundancy_zone_tag }}",
-            "disable_upgrade_migration": {{ consul_autopilot_disable_upgrade_migration | bool | to_json }},
-            "upgrade_version_tag": "{{ consul_autopilot_upgrade_version_tag }}"
-            {% endif %}
-        },
+    {## AutoPilot ##}
+    {% if consul_autopilot_enable | bool %}
+    "autopilot": {
+        "cleanup_dead_servers": {{ consul_autopilot_cleanup_dead_Servers | bool | to_json }},
+        "last_contact_threshold": "{{ consul_autopilot_last_contact_threshold }}",
+        "max_trailing_logs": {{ consul_autopilot_max_trailing_logs }},
+        "server_stabilization_time": "{{ consul_autopilot_server_stabilization_time }}"{{ ',' if consul_enterprise else '' }}
+        {% if consul_enterprise %}
+        "redundancy_zone_tag":  "{{ consul_autopilot_redundancy_zone_tag }}",
+        "disable_upgrade_migration": {{ consul_autopilot_disable_upgrade_migration | bool | to_json }},
+        "upgrade_version_tag": "{{ consul_autopilot_upgrade_version_tag }}"
         {% endif %}
-    {% endif %}
-
-    {% endif %}
-
-    {## WAN Join ##}
-    "retry_interval_wan": "{{ consul_retry_interval_wan }}",
-    "retry_max_wan": {{ consul_retry_max_wan | int }},
-
-    {% if _consul_wan_servercount | int > 0 %}
-    "retry_join_wan":
-    {% for server in _consul_wan_servers %}
-    {%   set _ = consul_join_wan.append(hostvars[server]['consul_advertise_address_wan'] | default(hostvars[server]['consul_bind_address'])) %}
-    {% endfor %}
-    {{ consul_join_wan | map('ipwrap') | list | to_json }},
+    },
     {% endif %}
 
     {## ACLs ##}
