@@ -21,13 +21,10 @@
   copy:
     content: "{{ consul_acl_master_token }}"
     dest: /tmp/consul_acl_master.token
-  become: false
-  vars:
-    ansible_become: false
+  become: no
   when:
     - (consul_acl_master_token is defined and consul_acl_master_token | trim != '')
     - bootstrap_state.stat.exists | bool
-  delegate_to: 127.0.0.1
   tags: acl-policy
 
 - name: Read acl master token for servers that require it
@@ -42,13 +39,10 @@
   file:
     path: /tmp/consul_acl_master.token
     state: absent
-  become: false
-  vars:
-    ansible_become: false
+  become: no
   when:
     - (consul_acl_master_token is defined and consul_acl_master_token | trim != '')
     - bootstrap_state.stat.exists | bool
-  delegate_to: 127.0.0.1
   tags: acl-policy
 
 - block:
@@ -87,13 +81,10 @@
   copy:
     content: "{{ consul_acl_replication_token }}"
     dest: /tmp/consul_acl_replication.token
-  become: false
-  vars:
-    ansible_become: false
+  become: no
   when:
     - (consul_acl_replication_token is defined and consul_acl_replication_token | trim != '')
     - bootstrap_state.stat.exists | bool
-  delegate_to: 127.0.0.1
   tags: acl-policy
 
 - name: Read acl replication token for servers that require it
@@ -108,13 +99,10 @@
   file:
     path: /tmp/consul_acl_replication.token
     state: absent
-  become: false
-  vars:
-    ansible_become: false
+  become: no
   when:
     - (consul_acl_replication_token is defined and consul_acl_replication_token | trim != '')
     - bootstrap_state.stat.exists | bool
-  delegate_to: 127.0.0.1
   tags: acl-policy
 
 - block:
@@ -130,6 +118,22 @@
   when:
     - (consul_acl_replication_token is not defined or consul_acl_replication_token | trim == '')
     - not bootstrap_state.stat.exists | bool
+  tags: acl-policy
+
+- name: Display ACL Master Token
+  debug:
+    msg: "{{ consul_acl_master_token }}"
+  when:
+    - (consul_acl_master_token is defined and consul_acl_master_token | trim != '')
+    - consul_acl_master_token_display | bool
+  tags: acl-policy
+
+- name: Display ACL Replication Token
+  debug:
+    msg: "{{ consul_acl_replication_token }}"
+  when:
+    - (consul_acl_replication_token is defined and consul_acl_replication_token | trim != '')
+    - consul_acl_replication_token_display | bool
   tags: acl-policy
 
 - block:
@@ -150,20 +154,4 @@
 
   when:
     - consul_acl_policy | bool
-  tags: acl-policy
-
-- name: Display ACL Master Token
-  debug:
-    msg: "{{ consul_acl_master_token }}"
-  when:
-    - (consul_acl_master_token is defined and consul_acl_master_token | trim != '')
-    - consul_acl_master_token_display | bool
-  tags: acl-policy
-
-- name: Display ACL Replication Token
-  debug:
-    msg: "{{ consul_acl_replication_token }}"
-  when:
-    - (consul_acl_replication_token is defined and consul_acl_replication_token | trim != '')
-    - consul_acl_replication_token_display | bool
   tags: acl-policy
