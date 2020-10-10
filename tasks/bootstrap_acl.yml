@@ -13,6 +13,7 @@
         dest: "{{ consul_acl_path }}/acl_policy_bootstrap"
         owner: "{{ consul_user }}"
         group: "{{ consul_group }}"
+        mode: +x
 
   when:
     - consul_acl_enable | bool
