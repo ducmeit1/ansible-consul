@@ -1,9 +1,9 @@
 # Main tasks for Consul
 
-- name: Verify Debian and other requirements of OS
-  import_tasks: verify_os.yml
+- name: Verify Debian OS and other requirements to run playbook
+  import_tasks: verify_requirements.yml
 
-- name: Add variables
+- name: Add require variables
   include_vars: "main.yml"
   tags: always
 
@@ -23,9 +23,14 @@
     
 - name: Add gossip encrpytion
   import_tasks: add_gossip_encryption.yml
+  when:
+    - consul_encrypt_enable | bool
 
-- name: Add ACL configuration
+- name: Add ACL policy
   import_tasks: add_acl.yml
+  when:
+    - consul_acl_enable | bool
+    - consul_node_role == 'server'
 
 - name: Add Consul configuration
   import_tasks: add_consul_config.yml

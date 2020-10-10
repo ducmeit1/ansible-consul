@@ -5,14 +5,14 @@
     update_cache: yes
     force_apt_get: yes
     cache_valid_time: 3600
-  tags: installation
+  tags: consul-installation
 
 - name: Install OS packages
   package:
     name: "{{ item }}"
     state: present
   with_items: "{{ consul_os_packages }}"
-  tags: installation
+  tags: consul-installation
 
 - name: Install python dependencies
   when:
@@ -47,15 +47,6 @@
 - name: Calculate whether to install consul binary
   set_fact:
     consul_install_binary: "{{ consul_install_upgrade | bool or not consul_binary_installed.stat.exists }}"
-
-- name: Gather facts from other servers
-  setup:
-  delegate_to: "{{ item }}"
-  delegate_facts: true
-  with_items: "{{ consul_servers | difference(play_hosts) }}"
-  ignore_errors: true
-  run_once: true
-  when: consul_gather_server_facts | bool
 
 - name: Expose advertise_address(_wan) datacenter and node_role as facts
   set_fact:

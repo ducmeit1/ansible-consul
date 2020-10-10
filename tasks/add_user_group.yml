@@ -13,3 +13,4 @@
     comment: "Consul user"
     group: "{{ consul_group }}"
     system: true
+    state: present

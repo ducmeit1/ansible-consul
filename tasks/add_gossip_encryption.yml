@@ -1,82 +1,79 @@
 # Add gossip encryption
 
 - block:
-    - block:
-        - name: Check for gossip encryption key on previously boostrapped server
-          command: "cat {{ consul_config_path }}/config.json"
-          register: consul_gossip_encryption_key_read
-          run_once: true
+    - name: Check for gossip encryption key on previously boostrapped server
+      command: "cat {{ consul_config_path }}/config.json"
+      register: consul_gossip_encryption_key_read
+      run_once: true
 
-        - name: Save gossip encryption key from existing configuration
-          set_fact:
-            consul_gossip_encryption_key: "{{ consul_gossip_encryption_key_read.stdout | from_json | json_query(query) }}"
-          vars:
-            query: "encrypt"
+    - name: Save gossip encryption key from existing configuration
+      set_fact:
+        consul_gossip_encryption_key: "{{ consul_gossip_encryption_key_read.stdout | from_json | json_query(query) }}"
+      vars:
+        query: "encrypt"
 
-      no_log: true
-      when:
-        - bootstrap_state.stat.exists | bool
-        - (consul_gossip_encryption_key is not defined or consul_gossip_encryption_key | length == 0)
+  no_log: true
+  when:
+    - bootstrap_state.stat.exists | bool
+    - (consul_gossip_encryption_key is not defined or consul_gossip_encryption_key | length == 0)
 
-    - name: Write gossip encryption key locally for use with new servers
+- name: Write gossip encryption key locally for use with new servers
+  copy:
+    content: "{{ consul_gossip_encryption_key }}"
+    dest: /tmp/consul_encrypt.key
+  become: false
+  vars:
+    ansible_become: false
+  when:
+    - (consul_gossip_encryption_key is defined or consul_gossip_encryption_key | length > 0)
+    - bootstrap_state.stat.exists | bool
+  delegate_to: 127.0.0.1
+  register: consul_gossip_encryption_key_local
+  changed_when: false
+  run_once: true
+
+# Generate new key if none was found
+- block:
+    - name: Generate gossip encryption key
+      shell: "PATH={{ consul_bin_path }}:$PATH consul keygen"
+      register: consul_gossip_encryption_keygen
+
+    - name: Save gossip encryption key
       copy:
-        content: "{{ consul_gossip_encryption_key }}"
+        content: "{{ consul_gossip_encryption_keygen.stdout }}"
         dest: /tmp/consul_encrypt.key
       become: false
       vars:
         ansible_become: false
-      when:
-        - (consul_gossip_encryption_key is defined or consul_gossip_encryption_key | length > 0)
-        - bootstrap_state.stat.exists | bool
       delegate_to: 127.0.0.1
-      register: consul_gossip_encryption_key_local
-      changed_when: false
-      run_once: true
-    
-    # Generate new key if none was found
-    - block:
-        - name: Generate gossip encryption key
-          shell: "PATH={{ consul_bin_path }}:$PATH consul keygen"
-          register: consul_gossip_encryption_keygen
 
-        - name: Save gossip encryption key
-          copy:
-            content: "{{ consul_gossip_encryption_keygen.stdout }}"
-            dest: /tmp/consul_encrypt.key
-          become: false
-          vars:
-            ansible_become: false
-          delegate_to: 127.0.0.1
-      
-      no_log: true
-      run_once: true
-      when:
-        - not consul_gossip_encryption_key_local.changed
-        - not bootstrap_state.stat.exists | bool
-
-    - name: Read gossip encryption key for servers that require it
-      set_fact: 
-        consul_gossip_encryption_key: "{{ lookup('file', '/tmp/consul_encrypt.key') }}"
-      when:
-        - (consul_gossip_encryption_key is not defined and consul_gossip_encryption_key | length == 0)
-        - bootstrap_state.stat.exists | bool
-    
-    - name: Delete gossip encryption key file
-      file:
-        path: /tmp/consul_encrypt.key
-        state: absent
-      become: false
-      vars:
-        ansible_become: false
-      delegate_to: 127.0.0.1
-      run_one: true
-      changed_when: false
-
-    - name: Display Gossip Encryption Key
-      debug:
-        msg: "{{ consul_gossip_encryption_key }}"
-      when:
-        - consul_encrpyt_key_display | bool
-
+  no_log: true
+  run_once: true
   when:
-    - consul_encrypt_enable | bool
+    - not consul_gossip_encryption_key_local.changed
+    - not bootstrap_state.stat.exists | bool
+
+- name: Read gossip encryption key for servers that require it
+  set_fact:
+    consul_gossip_encryption_key: "{{ lookup('file', '/tmp/consul_encrypt.key') }}"
+  when:
+    - (consul_gossip_encryption_key is not defined and consul_gossip_encryption_key | length == 0)
+    - bootstrap_state.stat.exists | bool
+
+- name: Delete gossip encryption key file
+  file:
+    path: "/tmp/consul_encrypt.key"
+    state: absent
+  become: false
+  vars:
+    ansible_become: false
+  delegate_to: 127.0.0.1
+  run_one: true
+  changed_when: false
+  no_log: true
+
+- name: Display Gossip Encryption Key
+  debug:
+    msg: "{{ consul_gossip_encryption_key }}"
+  when:
+    - consul_encrpyt_key_display | bool

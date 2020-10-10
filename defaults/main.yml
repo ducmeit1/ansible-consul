@@ -113,7 +113,6 @@ consul_servers: "\
     {% endif %}\
   {% endfor %}\
   {{ _consul_servers }}"
-consul_gather_server_facts: true
 
 # ACL Settings
 consul_acl_enable: true
@@ -125,7 +124,7 @@ consul_acl_down_policy: "extend-cache"
 consul_acl_token: ""
 consul_acl_agent_token: ""
 consul_acl_agent_master_token: ""
-consul_acl_default_policy: "allow"
+consul_acl_default_policy: "deny"
 consul_acl_master_token: ""
 consul_acl_master_token_display: true
 consul_acl_replication_enable: ""
