@@ -18,6 +18,7 @@
         owner: "{{ consul_user }}"
         group: "{{ consul_group }}"
         mode: 0644
+      notify: restart consul
       tags: tls
 
     - name: Copy server certificate
@@ -28,6 +29,7 @@
         owner: "{{ consul_user }}"
         group: "{{ consul_group }}"
         mode: 0644
+      notify: restart consul
       tags: tls
 
     - name: Copy server key
@@ -38,9 +40,9 @@
         owner: "{{ consul_user }}"
         group: "{{ consul_group }}"
         mode: 0600
+      notify: restart consul
       tags: tls
 
   when:
     - consul_tls_enable | bool
     - consul_tls_copy_keys | bool
-  notify: restart consul
