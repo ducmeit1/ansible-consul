@@ -13,33 +13,7 @@
         query: "encrypt"
         
   when:
-    - (consul_gossip_encryption_key is not defined or consul_gossip_encryption_key | trim == '')
-    - bootstrap_state.stat.exists | bool
-
-- name: Write gossip encryption key locally for use with new servers
-  copy:
-    content: "{{ consul_gossip_encryption_key }}"
-    dest: /tmp/consul_encrypt.key
-  become: no
-  when:
-    - (consul_gossip_encryption_key is defined or consul_gossip_encryption_key | trim != '')
-    - bootstrap_state.stat.exists | bool
-
-- name: Read gossip encryption key for servers that require it
-  set_fact:
-    consul_gossip_encryption_key: "{{ lookup('file', '/tmp/consul_encrypt.key') }}"
-  when:
-    - (consul_gossip_encryption_key is not defined and consul_gossip_encryption_key | trim == '')
-    - bootstrap_state.stat.exists | bool
-
-- name: Delete gossip encryption key file
-  file:
-    path: "/tmp/consul_encrypt.key"
-    state: absent
-  become: no
-  when:
-    - (consul_gossip_encryption_key is defined and consul_gossip_encryption_key | trim != '')
-    - bootstrap_state.stat.exists | bool
+    - consul_gossip_encryption_key is not defined or consul_gossip_encryption_key | trim == ''
 
 - block:
     - name: Generate gossip encryption key
@@ -50,12 +24,11 @@
     - name: Write gossip encryption key to fact
       set_fact: consul_gossip_encryption_key={{ consul_keygen.stdout }}
   when:
-    - (consul_gossip_encryption_key is not defined or consul_gossip_encryption_key | trim == '') 
-    - not bootstrap_state.stat.exists | bool
+    - consul_gossip_encryption_key is not defined or consul_gossip_encryption_key | trim == ''
 
 - name: Display Gossip Encryption Key
   debug:
     msg: "{{ consul_gossip_encryption_key }}"
   when:
-    - (consul_gossip_encryption_key is defined and consul_gossip_encryption_key | trim != '') 
+    - consul_gossip_encryption_key is defined and consul_gossip_encryption_key | trim != ''
     - consul_encrpyt_key_display | bool
