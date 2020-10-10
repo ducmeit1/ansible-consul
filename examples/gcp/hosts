@@ -1,4 +1,4 @@
 [consul_dc1]
-consul-1 ansible_ssh_host=10.127.0.3 consul_node_role=server consul_bootstrap_expect=true
-consul-2 ansible_ssh_host=10.127.0.4 consul_node_role=server consul_bootstrap_expect=true
-consul-3 ansible_ssh_host=10.127.0.5 consul_node_role=server consul_bootstrap_expect=true
+consul-1 ansible_ssh_host=10.127.0.10
+consul-2 ansible_ssh_host=10.127.0.11
+consul-3 ansible_ssh_host=10.127.0.12

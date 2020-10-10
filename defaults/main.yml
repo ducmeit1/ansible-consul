@@ -145,7 +145,6 @@ consul_tls_verify_incoming_rpc: true
 consul_tls_verify_incoming_https: true
 consul_tls_verify_server_hostname: false
 consul_tls_files_remote_src: false
-consul_tls_auto_encrypt: true
 
 # DNS Settings
 consul_delegate_datacenter_dns: false

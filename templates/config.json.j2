@@ -68,12 +68,6 @@
     "verify_outgoing": {{ consul_tls_verify_outgoing | bool | to_json }},
     "verify_incoming_https": {{consul_tls_verify_incoming_https | bool| to_json }},
     "verify_server_hostname": {{ consul_tls_verify_server_hostname | bool | to_json }},
-
-    {% if consul_tls_auto_encrypt | bool %}
-    "auto_encrypt": {
-        "allow_tls": true
-    },
-    {% endif %}
     {% endif %}
 
     {## LAN Join ##}
