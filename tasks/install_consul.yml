@@ -10,7 +10,6 @@
   stat:
     path: "/tmp/consul/consul_{{ consul_version }}_SHA256SUMS"
   register: consul_checksum
-  changed_when: false
   tags: consul-installation
 
 - name: Download Consul package checksum file
@@ -24,7 +23,6 @@
 - name: Read Consul package checksum
   shell: "grep {{ consul_pkg }} /tmp/consul/consul_{{ consul_version }}_SHA256SUMS"
   register: consul_sha256
-  changed_when: false
   tags: consul-installation
 
 - name: Check Consul package file
@@ -58,7 +56,7 @@
 
 - name: Daemon reload systemd in case the binaries upgraded
   systemd: daemon_reload=yes
-  become: true
+  become: yes
   when:
     - ansible_service_mgr == "systemd"
     - consul_install_upgrade | bool

@@ -10,18 +10,6 @@
     state: restarted
   listen: 'restart dnsmasq'
 
-- name: restart syslog-ng
-  service:
-    name: syslog-ng
-    state: restarted
-  listen: 'restart syslog-ng'
-
-- name: restart rsyslog
-  service:
-    name: rsyslog
-    state: restarted
-  listen: 'restart rsyslog'
-
 - name: start consul
   service:
     name: consul

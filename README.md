@@ -16,6 +16,17 @@ This ansible playbook helps you deploy consul cluster with multiple optionals
     sudo apt update -y
     sudo apt install ansible -y
     ```
+    
+- Install Ansible on Ubuntu Host Machine:
+    
+    ```shell
+    sudo apt update
+    sudo apt install -y git software-properties-common
+    sudo apt install -y python-pip
+    sudo pip install requirements.txt
+    sudo apt-add-repository --yes --update ppa:ansible/ansible
+    sudo apt install -y ansible
+    ```
 
 # Ansible-Playbook
 
