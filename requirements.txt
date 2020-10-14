@@ -3,7 +3,7 @@ netaddr
 testinfra
 flake8
 yamllint
-ansible==2.9.6
+ansible==2.9.14
 httplib2==0.18.1
 Jinja2==2.11.2
 jmespath==0.10.0
