@@ -8,6 +8,7 @@
     "node_name": "{{ consul_node_name }}",
     {% endif %}
     "datacenter": "{{ consul_datacenter }}",
+    "primary_datacenter": "{{ consul_primary_datacenter }}",
     "domain": "{{ consul_domain }}",
     "node_meta": {{ consul_node_meta | default({})| to_json }},
     {# Performance Settings #}
@@ -44,6 +45,8 @@
     "log_rotate_duration": "{{ consul_log_rotate_duration }}",
     "log_rotate_max_files": {{ consul_log_rotate_max_files }},
     "leave_on_terminate": {{ consul_leave_on_terminate | bool | to_json }},
+    "skip_leave_on_interrupt": {{ consul_skip_leave_on_interrupt | bool | to_json }},
+    "rejoin_after_leave": {{ consul_rejoin_after_leave | bool | to_json }},
 
     {## Limit HTTP Connections Per Client ##}
     "limits": {
@@ -113,7 +116,6 @@
 
     {## ACLs ##}
     {% if consul_acl_enable | bool %}
-        "primary_datacenter": "{{ consul_acl_datacenter }}",
         "acl": {
             "enabled": true,
             "default_policy": "{{ consul_acl_default_policy }}",

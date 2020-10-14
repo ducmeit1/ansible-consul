@@ -36,6 +36,7 @@ consul_log_rotate_max_files: 0
 
 # Consul Settings
 consul_datacenter: "dc1-gcp"
+consul_primary_datacenter: "dc1-gcp"
 consul_domain: "consul"
 consul_alt_domain: ""
 consul_node_meta: {}
@@ -52,7 +53,10 @@ consul_retry_max: 0
 consul_retry_max_wan: 0
 consul_env_vars: []
 consul_http_max_conns_per_client: 128
-consul_leave_on_terminate: true
+consul_leave_on_terminate: false
+consul_skip_leave_on_interrupt: true
+consul_rejoin_after_leave: true
+consul_enable_central_service_config: true
 
 # Autopilot Settings
 consul_autopilot_enable: true
@@ -108,7 +112,6 @@ consul_acl_enable: true
 consul_acl_policy: true
 consul_acl_ttl: "30s"
 consul_acl_token_persistence: true
-consul_acl_datacenter: "{{ consul_datacenter }}"
 consul_acl_down_policy: "extend-cache"
 consul_acl_token: ""
 consul_acl_agent_token: ""
@@ -147,9 +150,7 @@ consul_dnsmasq_enable: true
 consul_dnsmasq_bind_interfaces: true
 consul_dnsmasq_consul_address: "127.0.0.1"
 consul_dnsmasq_cache: -1
-consul_dnsmasq_servers:
-  - 8.8.8.8
-  - 8.8.4.4
+consul_dnsmasq_servers: []
 consul_dnsmasq_revservers: []
 consul_dnsmasq_no_poll: false
 consul_dnsmasq_no_resolv: false
