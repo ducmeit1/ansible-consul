@@ -24,6 +24,7 @@ This ansible playbook helps you deploy consul cluster with multiple optionals
     sudo apt install -y git software-properties-common
     sudo apt install -y python-pip
     sudo pip install -r requirements.txt
+    sudo apt install -y dirmngr
     sudo apt-add-repository --yes --update ppa:ansible/ansible
     sudo apt install -y ansible
     ```
