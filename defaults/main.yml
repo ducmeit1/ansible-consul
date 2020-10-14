@@ -72,8 +72,8 @@ consul_autopilot_upgrade_version_tag: ""
 consul_cloud_autodiscovery: true
 consul_cloud_autodiscovery_provider: "gce"
 consul_cloud_autodiscovery_gce_projectid: "driven-stage-269911"
-consul_cloud_autodiscovery_gce_tag_value: "{{ consul_datacenter }}"
-consul_cloud_autodiscovery_zone_pattern: "asia-southeast1-.*"
+consul_cloud_autodiscovery_gce_tag_value: "consul-dc1-gcp"
+consul_cloud_autodiscovery_zone_pattern: "asia-east1-.*"
 consul_cloud_autodiscovery_params: "project_name={{ consul_cloud_autodiscovery_gce_projectid }} zone_pattern={{ consul_cloud_autodiscovery_zone_pattern }} tag_value={{ consul_cloud_autodiscovery_gce_tag_value }}"
 consul_cloud_autodiscovery_string: "provider={{ consul_cloud_autodiscovery_provider }} {{ consul_cloud_autodiscovery_params }}"
 
@@ -119,7 +119,6 @@ consul_acl_agent_master_token: ""
 consul_acl_default_policy: "deny"
 consul_acl_master_token: ""
 consul_acl_master_token_display: true
-consul_acl_replication_enable: ""
 consul_acl_replication_token: ""
 consul_acl_replication_token_display: true
 
@@ -177,5 +176,5 @@ consul_services: []
 
 # Consul Connect Settings
 consul_connect_enabled: true
-consul_mesh_gateway_wan_federation_enabled: false
+consul_mesh_gateway_wan_federation_enabled: true
 consul_mesh_gateway_primary_gateways: []

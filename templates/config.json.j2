@@ -47,7 +47,7 @@
     "leave_on_terminate": {{ consul_leave_on_terminate | bool | to_json }},
     "skip_leave_on_interrupt": {{ consul_skip_leave_on_interrupt | bool | to_json }},
     "rejoin_after_leave": {{ consul_rejoin_after_leave | bool | to_json }},
-
+    "enable_central_service_config": {{ consul_enable_central_service_config | bool | to_json }},
     {## Limit HTTP Connections Per Client ##}
     "limits": {
         "http_max_conns_per_client": {{ consul_http_max_conns_per_client }}

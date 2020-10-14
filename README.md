@@ -10,7 +10,7 @@ This ansible playbook helps you deploy consul cluster with multiple optionals
     sudo apt update -y
     sudo apt install -y git software-properties-common
     sudo apt install -y python-pip
-    sudo pip install requirements.txt
+    sudo pip install -r requirements.txt
     echo 'deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main' | sudo tee -a /etc/apt/sources.list
     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 93C4A3FD7BB9C367
     sudo apt update -y
@@ -23,7 +23,7 @@ This ansible playbook helps you deploy consul cluster with multiple optionals
     sudo apt update
     sudo apt install -y git software-properties-common
     sudo apt install -y python-pip
-    sudo pip install requirements.txt
+    sudo pip install -r requirements.txt
     sudo apt-add-repository --yes --update ppa:ansible/ansible
     sudo apt install -y ansible
     ```
