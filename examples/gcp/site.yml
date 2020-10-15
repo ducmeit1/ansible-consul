@@ -9,7 +9,7 @@
     consul_datacenter: "dc1-gcp"
     consul_primary_datacenter: "dc1-gcp"
     consul_ui: true
-    consul_group_name: "consul-dc1"
+    consul_group_name: "consul-dc1-gcp"
     consul_cloud_autodiscovery: true
     consul_cloud_autodiscovery_provider: "gce"
     consul_cloud_autodiscovery_gce_projectid: "driven-stage-269911"
@@ -22,7 +22,7 @@
     consul_acl_agent_token: 2fbf96c2-19f0-5274-89eb-0d23cd732445
     consul_gossip_encryption_key: Yj9iNX82EM8p79uxsrX9B4elisChysFXT4mPxp2Mnb8=
     consul_acl_policy: true
-- name: "Installing Consul on DC1 GCP"
+- name: "Installing Consul on DC2 GCP"
   hosts: consul_dc2
   become: yes
   become_user: root
@@ -33,7 +33,7 @@
     consul_datacenter: "dc2-gcp"
     consul_primary_datacenter: "dc1-gcp"
     consul_ui: true
-    consul_group_name: "consul-dc2"
+    consul_group_name: "consul-dc2-gcp"
     consul_cloud_autodiscovery: true
     consul_cloud_autodiscovery_provider: "gce"
     consul_cloud_autodiscovery_gce_projectid: "driven-stage-269911"

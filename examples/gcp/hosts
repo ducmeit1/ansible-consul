@@ -1,4 +1,4 @@
-[consul_dc1]
+[consul-dc1-gcp]
 consul-1 ansible_ssh_host=10.127.0.22
-[consul_dc2]
+[consul-dc2-gcp]
 consul-1 ansible_ssh_host=10.128.0.20
