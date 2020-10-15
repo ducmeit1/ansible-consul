@@ -57,6 +57,9 @@ consul_leave_on_terminate: false
 consul_skip_leave_on_interrupt: true
 consul_rejoin_after_leave: true
 consul_enable_central_service_config: true
+consul_disable_update_check: false
+consul_enable_script_checks: false
+consul_enable_local_script_checks: false
 
 # Autopilot Settings
 consul_autopilot_enable: true
