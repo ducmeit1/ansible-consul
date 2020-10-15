@@ -35,8 +35,8 @@ consul_log_rotate_duration: "24h"
 consul_log_rotate_max_files: 0
 
 # Consul Settings
-consul_datacenter: "dc1-gcp"
-consul_primary_datacenter: "dc1-gcp"
+consul_datacenter: "dc1"
+consul_primary_datacenter: "dc1"
 consul_domain: "consul"
 consul_alt_domain: ""
 consul_node_meta: {}
@@ -69,11 +69,11 @@ consul_autopilot_disable_upgrade_migration: "false"
 consul_autopilot_upgrade_version_tag: ""
 
 # Cloud Auto Discovery Settings (Only Support GCP)
-consul_cloud_autodiscovery: true
-consul_cloud_autodiscovery_provider: "gce"
-consul_cloud_autodiscovery_gce_projectid: "driven-stage-269911"
-consul_cloud_autodiscovery_gce_tag_value: "consul-dc1-gcp"
-consul_cloud_autodiscovery_zone_pattern: "asia-east1-.*"
+consul_cloud_autodiscovery: false
+consul_cloud_autodiscovery_provider: ""
+consul_cloud_autodiscovery_gce_projectid: ""
+consul_cloud_autodiscovery_gce_tag_value: ""
+consul_cloud_autodiscovery_zone_pattern: ""
 consul_cloud_autodiscovery_params: "project_name={{ consul_cloud_autodiscovery_gce_projectid }} zone_pattern={{ consul_cloud_autodiscovery_zone_pattern }} tag_value={{ consul_cloud_autodiscovery_gce_tag_value }}"
 consul_cloud_autodiscovery_string: "provider={{ consul_cloud_autodiscovery_provider }} {{ consul_cloud_autodiscovery_params }}"
 
@@ -97,7 +97,7 @@ consul_ports:
   grpc: "8502"
 
 # Group Settings
-consul_group_name: "consul_dc1"
+consul_group_name: "dc1"
 consul_join: []
 consul_join_wan: []
 consul_servers: "\
@@ -109,7 +109,7 @@ consul_servers: "\
 
 # ACL Settings
 consul_acl_enable: true
-consul_acl_policy: true
+consul_acl_policy: false
 consul_acl_ttl: "30s"
 consul_acl_token_persistence: true
 consul_acl_down_policy: "extend-cache"
@@ -118,15 +118,15 @@ consul_acl_agent_token: ""
 consul_acl_agent_master_token: ""
 consul_acl_default_policy: "deny"
 consul_acl_master_token: ""
-consul_acl_master_token_display: true
+consul_acl_master_token_display: false
 consul_acl_replication_token: ""
-consul_acl_replication_token_display: true
+consul_acl_replication_token_display: false
 
 # Gossip Encryption Settings
 consul_encrypt_enable: true
 consul_encrypt_verify_incoming: true
 consul_encrypt_verify_outgoing: true
-consul_encrpyt_key_display: true
+consul_encrpyt_key_display: false
 
 # TLS Settings
 consul_tls_enable: true
@@ -176,5 +176,5 @@ consul_services: []
 
 # Consul Connect Settings
 consul_connect_enabled: true
-consul_mesh_gateway_wan_federation_enabled: true
+consul_mesh_gateway_wan_federation_enabled: false
 consul_mesh_gateway_primary_gateways: []

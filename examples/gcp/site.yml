@@ -1,7 +1,48 @@
-- name: "Installing Consul"
+- name: "Installing Consul on DC1 GCP"
   hosts: consul_dc1
   become: yes
   become_user: root
   roles:
     - ansible-consul
   gather_facts: true
+  vars:
+    consul_datacenter: "dc1-gcp"
+    consul_primary_datacenter: "dc1-gcp"
+    consul_ui: true
+    consul_group_name: "consul-dc1"
+    consul_cloud_autodiscovery: true
+    consul_cloud_autodiscovery_provider: "gce"
+    consul_cloud_autodiscovery_gce_projectid: "driven-stage-269911"
+    consul_cloud_autodiscovery_gce_tag_value: "consul-dc1-gcp"
+    consul_cloud_autodiscovery_zone_pattern: "asia-east1-.*"
+    consul_connect_enabled: true
+    consul_mesh_gateway_wan_federation_enabled: true
+    consul_acl_master_token: ac5d4603-675e-55c7-980b-9771ba226fba
+    consul_acl_replication_token: 5cea40d0-dec3-5b10-b5b4-86c8052c4e21
+    consul_acl_agent_token: 2fbf96c2-19f0-5274-89eb-0d23cd732445
+    consul_gossip_encryption_key: Yj9iNX82EM8p79uxsrX9B4elisChysFXT4mPxp2Mnb8=
+    consul_acl_policy: true
+- name: "Installing Consul on DC1 GCP"
+  hosts: consul_dc2
+  become: yes
+  become_user: root
+  roles:
+    - ansible-consul
+  gather_facts: true
+  vars:
+    consul_datacenter: "dc2-gcp"
+    consul_primary_datacenter: "dc1-gcp"
+    consul_ui: true
+    consul_group_name: "consul-dc2"
+    consul_cloud_autodiscovery: true
+    consul_cloud_autodiscovery_provider: "gce"
+    consul_cloud_autodiscovery_gce_projectid: "driven-stage-269911"
+    consul_cloud_autodiscovery_gce_tag_value: "consul-dc2-gcp"
+    consul_cloud_autodiscovery_zone_pattern: "asia-southeast1-.*"
+    consul_connect_enabled: true
+    consul_mesh_gateway_wan_federation_enabled: true
+    consul_acl_master_token: ac5d4603-675e-55c7-980b-9771ba226fba
+    consul_acl_replication_token: 5cea40d0-dec3-5b10-b5b4-86c8052c4e21
+    consul_acl_agent_token: 2fbf96c2-19f0-5274-89eb-0d23cd732445
+    consul_gossip_encryption_key: Yj9iNX82EM8p79uxsrX9B4elisChysFXT4mPxp2Mnb8=
+    consul_acl_policy: true
