@@ -1,5 +1,5 @@
 - name: "Installing Consul on DC1 GCP"
-  hosts: consul_dc1
+  hosts: consul-dc1-gcp
   become: yes
   become_user: root
   roles:
@@ -23,7 +23,7 @@
     consul_gossip_encryption_key: Yj9iNX82EM8p79uxsrX9B4elisChysFXT4mPxp2Mnb8=
     consul_acl_policy: true
 - name: "Installing Consul on DC2 GCP"
-  hosts: consul_dc2
+  hosts: consul-dc2-gcp
   become: yes
   become_user: root
   roles:
